@@ -1232,7 +1232,7 @@ const PHRASES = [
   { title: 'Для писем', list: ['Liebe Maria, / Lieber Ben, / Hallo Tom,', 'Sehr geehrte Damen und Herren,', 'Sehr geehrte Frau Weber, / Sehr geehrter Herr Braun,', 'Ich möchte … / Können Sie mir bitte …?', 'Vielen Dank! / Ich freue mich auf deine Antwort.', 'Viele Grüße / Liebe Grüße / Mit freundlichen Grüßen'] },
 ];
 
-// Sounds section: alphabet (letter, German name to speak, Russian hint) and sound groups.
+// Sounds section: alphabet (letter, German name to speak, Russian hint) and sound groups: words are [German, meaning, Russian transcription].
 const ALPHABET = [
   ['A', 'A', 'а'], ['B', 'Be', 'бэ'], ['C', 'Ce', 'цэ'], ['D', 'De', 'дэ'], ['E', 'E', 'э'], ['F', 'Eff', 'эф'], ['G', 'Ge', 'гэ'],
   ['H', 'Ha', 'ха'], ['I', 'I', 'и'], ['J', 'Jott', 'йот'], ['K', 'Ka', 'ка'], ['L', 'Ell', 'эль'], ['M', 'Emm', 'эм'], ['N', 'Enn', 'эн'],
@@ -1242,17 +1242,752 @@ const ALPHABET = [
 ];
 
 const SOUNDS = [
-  { id: 's-vok', title: 'Долгие и короткие гласные', ru: 'Долгая гласная перед одной согласной, перед h и в удвоении. Короткая перед двумя согласными.', words: [['Staat', 'государство'], ['Stadt', 'город'], ['Bahn', 'дорога, поезд'], ['Mann', 'мужчина'], ['Tee', 'чай'], ['Bett', 'кровать'], ['Boot', 'лодка'], ['kommen', 'приходить']] },
-  { id: 's-uml', title: 'ä, ö, ü', ru: 'ä как «э». ö: губы для «о», звук «э». ü: губы для «у», звук «и».', words: [['schon', 'уже'], ['schön', 'красивый'], ['Mutter', 'мать'], ['Mütter', 'матери'], ['Käse', 'сыр'], ['hören', 'слышать'], ['fünf', 'пять'], ['Tür', 'дверь']] },
-  { id: 's-ei', title: 'ei, ie, eu, äu, au', ru: 'ei = «ай», ie = долгое «и», eu и äu = «ой», au = «ау».', words: [['Wein', 'вино'], ['Wien', 'Вена'], ['mein', 'мой'], ['Liebe', 'любовь'], ['Freund', 'друг'], ['Häuser', 'дома'], ['Haus', 'дом'], ['heute', 'сегодня']] },
-  { id: 's-sch', title: 'sch, sp, st, tsch, z', ru: 'sch = «ш». sp, st в начале слова = «шп», «шт». tsch = «ч». z и tz = «ц».', words: [['Schule', 'школа'], ['Sport', 'спорт'], ['Stadt', 'город'], ['Fenster', 'окно'], ['Deutsch', 'немецкий'], ['Zeit', 'время'], ['Platz', 'площадь'], ['zwei', 'два']] },
-  { id: 's-ch', title: 'ch и -ig', ru: 'После a, o, u, au ch твёрдое «х». После остальных гласных и согласных мягкое «хь». -ig на конце = «ихь».', words: [['Buch', 'книга'], ['Bücher', 'книги'], ['acht', 'восемь'], ['ich', 'я'], ['Milch', 'молоко'], ['auch', 'тоже'], ['sechs', 'шесть'], ['zwanzig', 'двадцать']] },
-  { id: 's-kons', title: 'v, w, s, h, ß, оглушение', ru: 'v = «ф», w = «в», s перед гласной = «з», h после гласной не читается, ß = «с», b d g на конце = п т к.', words: [['Vater', 'отец'], ['Wasser', 'вода'], ['Sonne', 'солнце'], ['gehen', 'идти'], ['Straße', 'улица'], ['Hund', 'собака'], ['Tag', 'день'], ['gelb', 'жёлтый']] },
-  { id: 's-beton', title: 'Ударение', ru: 'Обычно на первом слоге. be-, ver-, ge- безударные. auf-, ein-, an- ударные. -ion, -ieren, -ei ударные.', words: [['arbeiten', 'работать'], ['bezahlen', 'платить'], ['verstehen', 'понимать'], ['aufstehen', 'вставать'], ['Information', 'информация'], ['studieren', 'учиться в вузе'], ['Bäckerei', 'пекарня'], ['Musik', 'музыка']] },
+  { id: 's-vok', title: 'Долгие и короткие гласные', ru: 'Долгая гласная перед одной согласной, перед h и в удвоении. Короткая перед двумя согласными.', words: [['Staat', 'государство', 'шта:т'], ['Stadt', 'город', 'штат'], ['Bahn', 'дорога, поезд', 'ба:н'], ['Mann', 'мужчина', 'ман'], ['Tee', 'чай', 'тэ:'], ['Bett', 'кровать', 'бэт'], ['Boot', 'лодка', 'бо:т'], ['kommen', 'приходить', 'ко́мэн']] },
+  { id: 's-uml', title: 'ä, ö, ü', ru: 'ä как «э». ö: губы для «о», звук «э». ü: губы для «у», звук «и».', words: [['schon', 'уже', 'шо:н'], ['schön', 'красивый', 'шё:н'], ['Mutter', 'мать', 'му́та'], ['Mütter', 'матери', 'мю́та'], ['Käse', 'сыр', 'кэ́:зэ'], ['hören', 'слышать', 'хё́:рэн'], ['fünf', 'пять', 'фюнф'], ['Tür', 'дверь', 'тю:р']] },
+  { id: 's-ei', title: 'ei, ie, eu, äu, au', ru: 'ei = «ай», ie = долгое «и», eu и äu = «ой», au = «ау».', words: [['Wein', 'вино', 'вайн'], ['Wien', 'Вена', 'ви:н'], ['mein', 'мой', 'майн'], ['Liebe', 'любовь', 'ли́:бэ'], ['Freund', 'друг', 'фройнт'], ['Häuser', 'дома', 'хо́йза'], ['Haus', 'дом', 'хаус'], ['heute', 'сегодня', 'хо́йтэ']] },
+  { id: 's-sch', title: 'sch, sp, st, tsch, z', ru: 'sch = «ш». sp, st в начале слова = «шп», «шт». tsch = «ч». z и tz = «ц».', words: [['Schule', 'школа', 'шу́:лэ'], ['Sport', 'спорт', 'шпорт'], ['Stadt', 'город', 'штат'], ['Fenster', 'окно', 'фэ́нста'], ['Deutsch', 'немецкий', 'дойч'], ['Zeit', 'время', 'цайт'], ['Platz', 'площадь', 'плац'], ['zwei', 'два', 'цвай']] },
+  { id: 's-ch', title: 'ch и -ig', ru: 'После a, o, u, au ch твёрдое «х». После остальных гласных и согласных мягкое «хь». -ig на конце = «ихь».', words: [['Buch', 'книга', 'бу:х'], ['Bücher', 'книги', 'бю́:хьа'], ['acht', 'восемь', 'ахт'], ['ich', 'я', 'ихь'], ['Milch', 'молоко', 'мильхь'], ['auch', 'тоже', 'аух'], ['sechs', 'шесть', 'зэкс'], ['zwanzig', 'двадцать', 'цва́нцихь']] },
+  { id: 's-kons', title: 'v, w, s, h, ß, оглушение', ru: 'v = «ф», w = «в», s перед гласной = «з», h после гласной не читается, ß = «с», b d g на конце = п т к.', words: [['Vater', 'отец', 'фа́:та'], ['Wasser', 'вода', 'ва́са'], ['Sonne', 'солнце', 'зо́нэ'], ['gehen', 'идти', 'гэ́:эн'], ['Straße', 'улица', 'штра́:сэ'], ['Hund', 'собака', 'хунт'], ['Tag', 'день', 'та:к'], ['gelb', 'жёлтый', 'гэльп']] },
+  { id: 's-beton', title: 'Ударение', ru: 'Обычно на первом слоге. be-, ver-, ge- безударные. auf-, ein-, an- ударные. -ion, -ieren, -ei ударные.', words: [['arbeiten', 'работать', 'а́рбайтэн'], ['bezahlen', 'платить', 'бэца́:лэн'], ['verstehen', 'понимать', 'фэрштэ́:эн'], ['aufstehen', 'вставать', 'а́уфштэ:эн'], ['Information', 'информация', 'информацио́н'], ['studieren', 'учиться в вузе', 'штуди́:рэн'], ['Bäckerei', 'пекарня', 'бэкэра́й'], ['Musik', 'музыка', 'музи́к']] },
 ];
 
 const TICKET_TEXT = "# rule|kind|sentence|options or hint|answer(s)|why|text to speak (optional)\n# kind c = choose (options split by /, first answer is the right one), w = write (answers split by /)\nlaut-vok|c|В каком слове <b>a</b> долгая?|Bahn/Mann/Stadt|Bahn|После a стоит h, она удлиняет гласную. В Mann и Stadt после a две согласные, поэтому a короткая.|Bahn\nlaut-vok|c|В каком слове <b>e</b> короткая?|Bett/Tee/gehen|Bett|Двойная tt делает гласную короткой. В Tee гласная удвоена, в gehen после e стоит h: обе долгие.|Bett\nlaut-vok|c|В каком слове <b>o</b> долгая?|Boot/kommen/Kopf|Boot|Удвоенная oo всегда долгая. В kommen двойная m, в Kopf две согласные pf.|Boot\nlaut-vok|c|Как читается <b>Name</b>?|«на́мэ»/«нам»/«нэйм»|«на́мэ»|После a одна согласная, значит a долгая; конечная e читается. «Нэйм» это английское чтение.|Name\nlaut-vok|c|В каком слове <b>i</b> долгая?|ihr/ist/bitte|ihr|h после i удлиняет её. В ist и bitte после i две согласные.|ihr\nlaut-uml|c|Как читается <b>schön</b>?|«шён»/«шон»/«шун»|«шён»|ö: губы как для «о», а звук «э». Без точек schon читается «шон» и значит «уже».|schön\nlaut-uml|c|Какое слово значит «красивый»?|schön/schon|schön|Умлаут меняет слово: schön красивый, schon уже.|schön\nlaut-uml|c|Как читается <b>fünf</b>?|«фюнф»/«фунф»/«финф»|«фюнф»|ü: губы трубочкой как для «у», язык как для «и».|fünf\nlaut-uml|c|Как читается <b>Käse</b>?|«кэ́зэ»/«ка́се»/«кейс»|«кэ́зэ»|ä читается как «э», s перед гласной как «з», конечная e читается.|Käse\nlaut-kons|c|Как читается <b>Zeit</b>?|«цайт»/«зайт»/«зейт»|«цайт»|z читается «ц», ei читается «ай».|Zeit\nlaut-kons|c|Как читается <b>Vater</b>?|«фа́та»/«ва́тер»/«фэ́йтер»|«фа́та»|v в немецких словах читается «ф», -er на конце звучит почти как «а».|Vater\nlaut-kons|c|Как читается <b>Wasser</b>?|«ва́са»/«уо́тер»/«фа́сер»|«ва́са»|w читается «в», ss как «с», -er на конце почти как «а».|Wasser\nlaut-kons|c|Как читается <b>Hund</b>?|«хунт»/«хунд»/«унд»|«хунт»|d на конце слова оглушается в «т». h в начале слышна как лёгкий выдох.|Hund\nlaut-kons|c|Как читается <b>groß</b>?|«грос»/«гроб»/«гроз»|«грос»|ß читается как «с». Это не буква B.|groß\nlaut-kons|c|Как читается <b>Sonne</b>?|«зо́нэ»/«со́нэ»/«со́нне»|«зо́нэ»|s перед гласной читается «з». Двойная nn звучит как одно «н», конечная e читается.|Sonne\nlaut-kons|c|Как читается <b>Jahr</b>?|«яр»/«джар»/«жар»|«яр»|j читается «й», ja звучит как «я». h после a не читается, только удлиняет a.|Jahr\nkombi-ei|c|Как читается <b>mein</b>?|«майн»/«мейн»/«мин»|«майн»|ei всегда читается «ай».|mein\nkombi-ei|c|Как читается <b>Bier</b>?|«бир»/«байр»/«би-эр»|«бир»|ie это одно долгое «и», а не два звука.|Bier\nkombi-ei|c|Как читается <b>Freund</b>?|«фройнт»/«фреунд»/«фрейнд»|«фройнт»|eu читается «ой», d на конце оглушается в «т».|Freund\nkombi-ei|c|Как читается <b>heute</b>?|«хо́йтэ»/«хе́утэ»/«хю́тэ»|«хо́йтэ»|eu читается «ой».|heute\nkombi-ei|c|Как читается <b>Häuser</b>?|«хо́йза»/«хэ́узер»/«ха́узер»|«хо́йза»|äu читается «ой», как eu. s между гласными звучит «з», -er почти как «а».|Häuser\nkombi-ei|c|Что значит <b>Wien</b>?|Вена/вино|Вена|ie читается «и»: Wien «вин» это Вена. Wein «вайн» это вино.|Wien\nkombi-ei|c|Как читается <b>zwei</b>?|«цвай»/«цвей»/«зви»|«цвай»|z читается «ц», w «в», ei «ай».|zwei\nkombi-sch|c|Как читается <b>Sport</b>?|«шпорт»/«спорт»/«зпорт»|«шпорт»|sp в начале слова читается «шп».|Sport\nkombi-sch|c|Как читается <b>Stadt</b>?|«штат»/«стадт»/«зтат»|«штат»|st в начале слова читается «шт», dt на конце звучит как «т».|Stadt\nkombi-sch|c|Как читается <b>Fenster</b>?|«фэ́нста»/«фэ́ншта»/«вэ́нстер»|«фэ́нста»|st в середине корня читается «ст». «шт» бывает только в начале корня.|Fenster\nkombi-sch|c|Как читается <b>Deutsch</b>?|«дойч»/«деутш»/«дейч»|«дойч»|eu читается «ой», tsch читается «ч».|Deutsch\nkombi-sch|c|Как читается <b>Schule</b>?|«шу́лэ»/«ску́лэ»/«сху́лэ»|«шу́лэ»|sch читается «ш».|Schule\nkombi-sch|c|Как читается <b>jetzt</b>?|«йецт»/«джетст»/«жетцт»|«йецт»|j читается «й», tz читается «ц».|jetzt\nkombi-sch|c|Как читается <b>Apfel</b>?|«а́пфэль»/«а́фэль»/«а́пэль»|«а́пфэль»|pf произносится полностью: сначала «п», потом «ф».|Apfel\nkombi-ch|c|Как читается ch в слове <b>Buch</b>?|твёрдо, как «х» в «ах»/мягко, как «хь» в «химия»/как «к»|твёрдо, как «х» в «ах»|После u звук ch твёрдый.|Buch\nkombi-ch|c|Как читается ch в слове <b>ich</b>?|мягко, как «хь» в «химия»/твёрдо, как «х» в «ах»/как «ш»|мягко, как «хь» в «химия»|После i звук ch мягкий.|ich\nkombi-ch|c|Как читается <b>sechs</b>?|«зэкс»/«зэхс»/«сешс»|«зэкс»|chs читается «кс», s перед гласной «з».|sechs\nkombi-ch|c|Как читается <b>zwanzig</b>?|«цва́нцихь»/«зва́нциг»/«сва́нсих»|«цва́нцихь»|-ig на конце слова звучит как мягкое «ихь», z читается «ц».|zwanzig\nkombi-ch|c|В каком слове ch звучит твёрдо, как «х» в слове «ах»?|acht/Milch/Bücher|acht|После a звук ch твёрдый. В Milch он стоит после согласной, в Bücher после ü: там ch мягкий.|acht\nbeton-wort|c|Где ударение в слове <b>arbeiten</b>?|AR-bei-ten/ar-BEI-ten/ar-bei-TEN|AR-bei-ten|В немецких словах ударение обычно падает на первый слог.|arbeiten\nbeton-wort|c|Где ударение в слове <b>bezahlen</b>?|be-ZAH-len/BE-zah-len/be-zah-LEN|be-ZAH-len|Приставка be- безударная, ударение на корне.|bezahlen\nbeton-wort|c|Где ударение в слове <b>verstehen</b>?|ver-STE-hen/VER-ste-hen/ver-ste-HEN|ver-STE-hen|Приставка ver- безударная.|verstehen\nbeton-wort|c|Где ударение в слове <b>aufstehen</b>?|AUF-ste-hen/auf-STE-hen/auf-ste-HEN|AUF-ste-hen|Отделяемая приставка auf- ударная.|aufstehen\nbeton-wort|c|Где ударение в слове <b>einkaufen</b>?|EIN-kau-fen/ein-KAU-fen/ein-kau-FEN|EIN-kau-fen|Отделяемая приставка ein- ударная.|einkaufen\nbeton-wort|c|Где ударение в слове <b>Bahnhof</b>?|BAHN-hof/Bahn-HOF|BAHN-hof|В сложном слове ударение на первой части: Bahn + Hof.|Bahnhof\nbeton-wort|c|Где ударение в слове <b>Geschenk</b>?|Ge-SCHENK/GE-schenk|Ge-SCHENK|Приставка ge- безударная.|Geschenk\nbeton-fremd|c|Где ударение в слове <b>Information</b>?|In-for-ma-TION/IN-for-ma-tion/In-FOR-ma-tion|In-for-ma-TION|Суффикс -ion всегда ударный.|Information\nbeton-fremd|c|Где ударение в слове <b>studieren</b>?|stu-DIE-ren/STU-die-ren/stu-die-REN|stu-DIE-ren|В глаголах на -ieren ударение на ie.|studieren\nbeton-fremd|c|Где ударение в слове <b>Bäckerei</b>?|Bä-cke-REI/BÄ-cke-rei/Bä-CKE-rei|Bä-cke-REI|Суффикс -ei ударный.|Bäckerei\nbeton-fremd|c|Где ударение в слове <b>Student</b>?|Stu-DENT/STU-dent|Stu-DENT|Суффикс -ent ударный.|Student\nbeton-fremd|c|Где ударение в слове <b>Musik</b>?|Mu-SIK/MU-sik|Mu-SIK|В отличие от русского «му́зыка», в немецком ударение на последнем слоге.|Musik\nsein-form|w|Ich ___ Lehrer.|sein|bin|ich → bin. По-русски «я учитель» без глагола, по-немецки глагол обязателен.\nsein-form|w|Du ___ sehr nett.|sein|bist|du → bist.\nsein-form|w|Das ___ meine Frau.|sein|ist|das (это) → ist.\nsein-form|w|Wir ___ aus Polen.|sein|sind|wir → sind.\nsein-form|w|Ihr ___ aus Berlin, oder?|sein|seid|ihr → seid, через d. seit через t это другое слово.\nsein-form|c|Herr Weber, ___ Sie müde?|sind/bist/seid|sind|Вежливое Sie: глагол как у «они», sind.\nsein-form|c|Anna und Tom ___ Freunde.|sind/ist/seid|sind|Anna und Tom = sie (они) → sind.\nsein-form|c|Wo ___ das Hotel?|ist/sind/bist|ist|das Hotel = es (оно) → ist.\nsein-vorst|w|Wie ___ du?|heißen|heißt|du heißt: основа кончается на ß, поэтому вместо -st только -t.\nsein-vorst|w|Ich ___ in Hamburg.|wohnen|wohne|ich → окончание -e.\nsein-vorst|w|Woher ___ Sie?|kommen|kommen|Sie → -en, как в инфинитиве.\nsein-vorst|c|Mein Name ___ Olga.|ist/bin/bist|ist|mein Name = er → ist. Глагол согласуется со словом Name, а не с «я».\nsein-vorst|c|Wie geht es ___? – Gut, danke.|dir/du/dich|dir|Wie geht es dir? это готовая фраза, её учат целиком.\nsein-vorst|w|Ich komme ___ Belarus.|предлог|aus|aus = из (откуда).\nsein-du|c|Вы говорите с врачом. Как спросить, как его зовут?|Wie heißen Sie?/Wie heißt du?/Wie heißt ihr?|Wie heißen Sie?|С врачом говорят на «Вы»: Sie.\nsein-du|c|Вы спрашиваете двух друзей: «Откуда вы?»|Woher kommt ihr?/Woher kommen Sie?/Woher kommst du?|Woher kommt ihr?|Несколько людей, с которыми ты на «ты», это ihr.\nsein-du|c|Kinder, wo ___ ihr?|seid/sind/bist|seid|ihr → seid.\nart-genus|c|___ Mädchen spielt im Garten.|Das/Die/Der|Das|das Mädchen: средний род из-за -chen, хотя это девочка.\nart-genus|c|___ Vater arbeitet viel.|Der/Die/Das|Der|Мужчина → der.\nart-genus|c|___ Mutter kocht.|Die/Der/Das|Die|Женщина → die.\nart-genus|c|___ Kind ist fünf Jahre alt.|Das/Der/Die|Das|{n:das Kind} средний род, его запоминают.\nart-genus|c|___ Buch ist interessant.|Das/Der/Die|Das|{n:das Buch} средний род, хотя «книга» женского. Поэтому слово учат вместе с артиклем.\nart-genus|c|___ Tisch ist neu.|Der/Die/Das|Der|{m:der Tisch} мужской род.\nart-regeln|c|___ Wohnung ist groß.|Die/Der/Das|Die|-ung → die: {f:die Wohnung}.\nart-regeln|c|___ Brötchen ist frisch.|Das/Der/Die|Das|-chen → das: {n:das Brötchen}.\nart-regeln|c|___ Museum ist heute geschlossen.|Das/Der/Die|Das|-um → das: {n:das Museum}.\nart-regeln|c|___ Information ist richtig.|Die/Der/Das|Die|-ion → die: {f:die Information}.\nart-regeln|c|___ Montag ist mein Lieblingstag.|Der/Die/Das|Der|Дни недели мужского рода: {m:der Montag}.\nart-regeln|c|___ Haustür ist offen.|Die/Das/Der|Die|Род сложного слова по последней части: {f:die Tür} → {f:die Haustür}.\nart-regeln|c|___ Lehrer kommt aus Wien.|Der/Die/Das|Der|Мужчина на -er → der. Глагол kommt в единственном числе, значит это один учитель.\nart-regeln|c|___ Universität ist alt.|Die/Der/Das|Die|-tät → die: {f:die Universität}.\nart-regeln|c|___ Essen ist kalt.|Das/Der/Die|Das|Глагол, ставший существительным, среднего рода: {n:das Essen}.\nart-ein|c|Hier ist ___ Park. ___ Park ist sehr schön.|ein – Der/der – Ein/ein – Ein|ein – Der|Сначала парк новый для собеседника → ein. Во втором предложении он уже знаком → der.\nart-ein|c|Das ist ___ Lampe.|eine/ein|eine|{f:die Lampe} → eine.\nart-ein|c|Das ist ___ Auto.|ein/eine|ein|{n:das Auto} → ein.\nart-ein|c|Das sind ___.|Bücher/ein Bücher/eine Bücher|Bücher|Во множественном числе неопределённого артикля нет.\nart-ein|c|___ Sonne scheint.|Die/Eine|Die|Солнце одно, поэтому определённый артикль.\nzahl-bis20|w|12 = ___||zwölf|zwölf пишется с ö.\nzahl-bis20|w|16 = ___||sechzehn|sechzehn: s из sechs выпадает.\nzahl-bis20|w|17 = ___||siebzehn|siebzehn: -en из sieben выпадает.\nzahl-bis20|c|13 = ___|dreizehn/dreißig/zehndrei|dreizehn|13–19: единицы + zehn. dreißig это 30.\nzahl-bis20|c|Hier ist nur ___ Tisch.|ein/eins|ein|Перед существительным ein. eins говорят только при счёте.\nzahl-gross|w|21 = ___||einundzwanzig|Сначала единицы, потом und, потом десятки, одним словом: ein-und-zwanzig.\nzahl-gross|w|30 = ___||dreißig|dreißig пишется с ß, не «dreizig».\nzahl-gross|c|vierunddreißig = ___|34/43/304|34|vier (4) und dreißig (30): первой звучит последняя цифра.\nzahl-gross|c|67 = ___|siebenundsechzig/sechzigsieben/sechsundsiebzig|siebenundsechzig|7 + und + 60. sechsundsiebzig это 76.\nzahl-gross|w|70 = ___||siebzig|siebzig без -en, как в siebzehn.\nzahl-gross|c|245 = ___|zweihundertfünfundvierzig/zweihundertvierundfünfzig/zweihundertvierzigfünf|zweihundertfünfundvierzig|zweihundert + fünf-und-vierzig. vierundfünfzig это 54.\nzahl-gross|w|100 = ___||hundert/einhundert|hundert или einhundert, оба верно.\nzahl-alltag|c|Wie alt bist du? – Ich ___ 37 Jahre alt.|bin/habe/ist|bin|По-немецки возраст через sein: «я есть 37 лет». haben здесь ошибка.\nzahl-alltag|c|4,90 € = ___|vier Euro neunzig/vier Euros neunzig/neunzig Euro vier|vier Euro neunzig|Сначала евро, потом центы. Euro в ценах без -s.\nzahl-alltag|c|По телефону, чтобы не спутать с drei, вместо zwei часто говорят:|zwo/zwölf/zweite|zwo|zwo это та же двойка, её говорят по телефону и на вокзале.\nzahl-alltag|c|___ kostet das? – Drei Euro.|Was/Wie/Wo|Was|Was kostet das? (или Wie viel kostet das?). «Wie kostet» неверно.\nfrage-w|c|___ wohnst du? – In Köln.|Wo/Woher/Wohin|Wo|Где → wo.\nfrage-w|c|___ kommst du? – Aus Polen.|Woher/Wo/Wohin|Woher|Откуда → woher. Ответ с aus подсказывает.\nfrage-w|c|___ fährst du? – Nach Berlin.|Wohin/Wo/Woher|Wohin|Куда → wohin. Ответ с nach подсказывает.\nfrage-w|c|___ ist das? – Das ist Frau Klein.|Wer/Wo/Was|Wer|Кто → wer. Не путай с wo (где).\nfrage-w|c|___ ist das? – Das ist ein Handy.|Was/Wer/Wie|Was|Что → was.\nfrage-w|c|___ heißen Sie? – Paul Becker.|Wie/Was/Wer|Wie|Как Вас зовут: Wie heißen Sie? Немцы спрашивают «как», а не «что».\nfrage-w|c|___ kommt der Bus? – Um 8 Uhr.|Wann/Wo/Wie|Wann|Когда → wann.\nfrage-w|c|___ kostet das Ticket? – 5 Euro.|Wie viel/Wie/Wann|Wie viel|Сколько → wie viel.\nfrage-w|c|___ lernst du Deutsch? – Ich möchte in Deutschland arbeiten.|Warum/Wann/Wo|Warum|Ответ называет причину → warum.\nfrage-w|c|Wo ___?|wohnen Sie/Sie wohnen/wohnt Sie|wohnen Sie|Вопросительное слово, глагол, подлежащее.\nfrage-ja|c|___ aus der Ukraine?|Kommst du/Kommt du/Kommen du|Kommst du|Вопрос без вопросительного слова: глагол на первом месте.\nfrage-ja|c|Bist du müde? – Nein, ich ___ nicht müde.|bin/bist/ist|bin|В ответе говоришь о себе: ich bin.\nfrage-ja|c|Hast du keine Zeit? – ___, ich habe Zeit.|Doch/Ja/Nein|Doch|Вопрос с отрицанием, а ответ «да, есть»: doch.\nfrage-ja|c|Wohnen Sie in Berlin? – ___, ich wohne in Hamburg.|Nein/Doch/Ja|Nein|Обычный вопрос без отрицания, ответ «нет».\n\n# rule|kind|sentence|options or hint|answer(s)|why|text to speak (optional)\npraes-end|w|Ich ___ Deutsch.|lernen|lerne|ich → -e.\npraes-end|w|Du ___ gut.|kochen|kochst|du → -st.\npraes-end|w|Er ___ gern Musik.|hören|hört|er → -t.\npraes-end|w|Wir ___ am Sonntag Fußball.|spielen|spielen|Форма wir совпадает с инфинитивом.\npraes-end|w|Ihr ___ in Berlin, oder?|wohnen|wohnt|ihr → -t.\npraes-end|w|Frau Müller ___ jeden Tag Tee.|trinken|trinkt|Frau Müller = sie (она) → -t.\npraes-end|w|Was ___ ihr am Wochenende?|machen|macht|ihr → -t.\npraes-end|w|Meine Eltern ___ in Minsk.|leben|leben|Eltern = sie (они) → -en.\npraes-end|c|___ du Kaffee?|Trinkst/Trinkt/Trinke|Trinkst|du → -st.\npraes-end|c|Paul und ich ___ zusammen.|kochen/kocht/kochst|kochen|Paul und ich = wir → -en.\npraes-stamm|w|Du ___ viel.|arbeiten|arbeitest|Основа arbeit- кончается на -t: перед -st вставляется e.\npraes-stamm|w|Er ___ in einer Bank.|arbeiten|arbeitet|Основа на -t: er arbeitet.\npraes-stamm|w|Du ___ Anna, oder?|heißen|heißt|Основа на ß: у du только -t.\npraes-stamm|w|Du ___ sehr gut.|tanzen|tanzt|Основа на z: у du только -t.\npraes-stamm|w|Er ___ das Fenster.|öffnen|öffnet|Основа на -ffn: вставка e, иначе не выговорить.\npraes-stamm|c|Wo ___ du den Bahnhof?|findest/findst/fint|findest|Основа на -d: du findest.\npraes-stamm|c|Du ___ gern, oder?|reist/reisst/reisest|reist|Основа на -s: у du только -t.\nstark-haben|w|Ich ___ einen Bruder.|haben|habe|ich habe.\nstark-haben|w|___ du Hunger?|haben|Hast|du hast: b выпадает.\nstark-haben|w|Mein Bruder ___ keine Zeit.|haben|hat|er hat.\nstark-haben|w|Wir ___ ein Auto.|haben|haben|wir haben.\nstark-haben|c|___ ihr Kinder?|Habt/Hat/Haben|Habt|ihr habt.\nstark-e|w|Er ___ gut Deutsch.|sprechen|spricht|e → i у er.\nstark-e|w|Was ___ du gern?|essen|isst|essen → du isst (ss + t).\nstark-e|w|Anna ___ ein Buch.|lesen|liest|e → ie у er/sie.\nstark-e|w|___ du das Haus dort?|sehen|Siehst|e → ie у du.\nstark-e|w|Du ___ den Bus, ich fahre mit dem Auto.|nehmen|nimmst|nehmen → du nimmst: меняется и согласная.\nstark-e|w|Mein Vater ___ mir.|helfen|hilft|e → i у er.\nstark-e|c|Ich ___ Russisch und Polnisch.|spreche/sprichst/spricht|spreche|У ich гласная не меняется.\nstark-e|c|Er ___ seine Freunde im Café.|trifft/treffet/treft|trifft|treffen → er trifft.\nstark-a|w|Er ___ nach Hamburg.|fahren|fährt|a → ä у er.\nstark-a|w|Das Baby ___.|schlafen|schläft|a → ä у es.\nstark-a|w|Du ___ jeden Morgen.|laufen|läufst|au → äu у du.\nstark-a|w|Ich ___ nicht, wo er wohnt.|wissen|weiß|ich weiß: без окончания.\nstark-a|w|Er ___ Schokolade.|mögen|mag|er mag: без окончания.\nstark-a|c|___ du, wann der Kurs beginnt?|Weißt/Wisst/Weiß|Weißt|du weißt. wisst это форма ihr.\nstark-a|c|Wir ___ nach Wien.|fahren/fähren/fährt|fahren|У wir гласная не меняется.\nstark-a|c|Ich ___ Anna gut. Sie ist meine Kollegin.|kenne/weiß/kann|kenne|Человека знают: kennen. wissen для фактов.\nwort-v2|c|Heute ___ Deutsch.|lerne ich/ich lerne/lernen ich|lerne ich|heute на первом месте → глагол второй, подлежащее за ним.\nwort-v2|c|Am Wochenende ___ nach Berlin.|fahren wir/wir fahren/wir fahrt|fahren wir|am Wochenende занимает первое место → глагол, потом wir.\nwort-v2|c|Jeden Tag ___ Kaffee.|trinkt er/er trinkt/trinken er|trinkt er|jeden Tag на первом месте → инверсия.\nwort-v2|c|Как по-немецки «Завтра я не работаю»?|Morgen arbeite ich nicht./Morgen ich arbeite nicht./Morgen ich nicht arbeite.|Morgen arbeite ich nicht.|morgen первое, глагол второй, подлежащее третье.\nwort-v2|c|Как по-немецки «В Берлине живёт моя сестра»?|In Berlin wohnt meine Schwester./In Berlin meine Schwester wohnt./Wohnt in Berlin meine Schwester.|In Berlin wohnt meine Schwester.|in Berlin на первом месте, глагол второй.\nwort-v2|c|Deutsch ___ schwer.|finde ich/ich finde/finden ich|finde ich|Дополнение на первом месте → глагол второй.\nwort-v2|c|Um acht Uhr ___.|beginnt der Kurs/der Kurs beginnt/beginnt Kurs der|beginnt der Kurs|Время на первом месте → глагол, потом подлежащее.\nwort-konj|c|Ich bin müde, aber ___.|ich arbeite/arbeite ich/arbeiten ich|ich arbeite|aber не занимает места: дальше обычный порядок.\nwort-konj|c|Er bleibt zu Hause, denn ___.|er ist krank/ist er krank/er krank ist|er ist krank|denn стоит на нулевом месте, порядок обычный.\nwort-konj|c|Zuerst frühstücke ich, dann ___.|gehe ich zur Arbeit/ich gehe zur Arbeit/ich zur Arbeit gehe|gehe ich zur Arbeit|dann занимает первое место, глагол сразу за ним.\nwort-konj|c|Trinkst du Tee ___ Kaffee?|oder/aber/denn|oder|«или» → oder.\nwort-konj|c|Ich komme aus Polen, ___ ich wohne in Deutschland.|aber/oder/denn|aber|Противопоставление «но» → aber.\nwort-klammer|c|Ich kann ___.|heute nicht kommen/nicht kommen heute/kommen heute nicht|heute nicht kommen|Инфинитив в самом конце, остальное внутри рамки.\nwort-klammer|c|Как по-немецки «Он каждый вечер смотрит телевизор»?|Er sieht jeden Abend fern./Er fernsieht jeden Abend./Er sieht fern jeden Abend.|Er sieht jeden Abend fern.|Приставка fern- уходит в конец.\nwort-klammer|c|Wir haben gestern ___.|Pizza gegessen/gegessen Pizza/Pizza essen|Pizza gegessen|Причастие Perfekt стоит в конце.\nwort-klammer|c|Morgen muss ich ___.|früh arbeiten/arbeiten früh/früh arbeite|früh arbeiten|После модального глагола инфинитив в конце.\nplural-typ|w|Im Zimmer stehen vier ___.|der Tisch|Tische|Tisch, -e → Tische.\nplural-typ|w|Wir brauchen zwei ___.|der Stuhl|Stühle|Stuhl, ¨-e → Stühle: умлаут и -e.\nplural-typ|w|Ich habe drei ___.|das Kind|Kinder|Kind, -er → Kinder.\nplural-typ|w|Auf dem Tisch liegen viele ___.|das Buch|Bücher|Buch, ¨-er → Bücher.\nplural-typ|w|In der Küche sind zwei ___.|die Lampe|Lampen|Женский род на -e → -n.\nplural-typ|w|Wir haben zwei ___.|das Auto|Autos|Заимствование на гласную → -s.\nplural-typ|w|Hier arbeiten zehn ___.|der Lehrer|Lehrer|Мужской на -er без окончания.\nplural-typ|w|Ich kaufe ein Kilo ___.|der Apfel|Äpfel|Apfel, ¨- → Äpfel: только умлаут.\nplural-typ|w|Die ___ spielen im Park.|der Mann|Männer|Mann, ¨-er → Männer.\nplural-tipp|w|Unsere ___ sind sehr nett.|die Lehrerin|Lehrerinnen|-in → -innen: n удваивается.\nplural-tipp|w|Sie hat zwei ___.|die Tasche|Taschen|Женский род на -e → -n.\nplural-tipp|w|Die ___ sind frisch.|das Brötchen|Brötchen|-chen во множественном не меняется.\nplural-tipp|w|In der Stadt gibt es drei ___.|das Kino|Kinos|Короткое заимствование на гласную → -s.\nplural-tipp|w|Hier gibt es viele neue ___.|die Wohnung|Wohnungen|-ung → -ungen.\nplural-tipp|w|In Berlin gibt es viele ___.|das Museum|Museen|Неправильное: Museum → Museen.\nplural-tipp|c|___ Kinder spielen im Garten.|Die/Der/Das|Die|Во множественном числе артикль всегда die.\nplural-tipp|c|Ich habe zwei ___.|Koffer/Koffers/Koffern|Koffer|Мужской на -er без окончания: der Koffer → die Koffer.\nneg-kein|c|Ich habe ___ Auto.|kein/nicht/keine|kein|Было бы ein Auto → kein Auto.\nneg-kein|c|Wir haben heute ___ Zeit.|keine/kein/nicht|keine|Zeit без артикля → kein; die Zeit → keine.\nneg-kein|c|Er trinkt ___ Kaffee.|keinen/kein/keine|keinen|der Kaffee в Akkusativ → keinen.\nneg-kein|w|Ich habe ___ Kinder.|kein|keine|Во множественном числе keine.\nneg-kein|c|Das ist ___ Problem.|kein/nicht/keine|kein|Было бы ein Problem → kein Problem.\nneg-kein|w|Wir haben ___ Milch mehr.|kein|keine|die Milch → keine.\nneg-nicht|c|Ich komme heute ___.|nicht/kein/keine|nicht|Отрицается глагол → nicht.\nneg-nicht|c|Das Hotel ist ___ teuer.|nicht/kein/keine|nicht|Отрицается прилагательное → nicht.\nneg-nicht|c|Das ist ___ mein Handy.|nicht/kein/keine|nicht|С притяжательным mein → nicht.\nneg-nicht|c|Ich kenne den Mann ___.|nicht/keinen/kein|nicht|den Mann с определённым артиклем → nicht.\nneg-nicht|c|Das ist ___ Anna, das ist Maria.|nicht/kein/keine|nicht|Перед именем → nicht.\nneg-pos|c|Как по-немецки «Я живу не в Берлине»?|Ich wohne nicht in Berlin./Ich wohne in Berlin nicht./Ich nicht wohne in Berlin.|Ich wohne nicht in Berlin.|nicht стоит перед обозначением места.\nneg-pos|c|Ich kann morgen ___ kommen.|nicht/kein/keine|nicht|Отрицается глагол, nicht перед инфинитивом.\nneg-pos|c|Как по-немецки «Я сегодня не работаю»?|Ich arbeite heute nicht./Ich nicht arbeite heute./Ich arbeite heute kein.|Ich arbeite heute nicht.|Отрицание всего предложения: nicht ближе к концу.\nneg-pos|c|Kommst du nicht mit? – ___, ich komme mit!|Doch/Ja/Nein|Doch|«Да» на вопрос с отрицанием → doch.\nneg-pos|c|Как по-немецки «Я не встаю»?|Ich stehe nicht auf./Ich stehe auf nicht./Ich nicht stehe auf.|Ich stehe nicht auf.|nicht стоит перед отделяемой приставкой.\nakk-form|w|Ich habe ___ Bruder.|ein|einen|der Bruder в Akkusativ → einen.\nakk-form|w|Ich sehe ___ Mann.|der|den|der → den.\nakk-form|c|Ich kaufe ___ Tasche.|eine/einen/ein|eine|Женский род в Akkusativ не меняется.\nakk-form|c|Wir brauchen ___ Tisch.|einen/ein/eine|einen|der Tisch → einen.\nakk-form|c|Er sucht ___ Hotel.|ein/einen/eine|ein|Средний род в Akkusativ не меняется.\nakk-form|w|Ich besuche ___ Vater.|mein|meinen|der Vater → meinen.\nakk-form|c|Hast du ___ Stift?|einen/ein/eine|einen|der Stift → einen.\nakk-form|c|Ich nehme ___ Salat.|den/der/dem|den|der Salat → den.\nakk-wann|c|Das ist ___ Computer.|ein/einen/einem|ein|После sein Akkusativ не нужен: Nominativ.\nakk-wann|c|Hier gibt es ___ Supermarkt.|einen/ein/einem|einen|es gibt + Akkusativ.\nakk-wann|c|Das Geschenk ist für ___ Vater.|meinen/mein/meinem|meinen|für + Akkusativ.\nakk-wann|c|Ich gehe nicht ohne ___ Hund.|meinen/mein/meinem|meinen|ohne + Akkusativ.\nakk-wann|c|Er ist ___ Freund.|mein/meinen|mein|После sein Nominativ.\nakk-wann|w|Ich möchte ___ Kaffee, bitte.|ein|einen|möchten + Akkusativ: der Kaffee → einen.\nakk-wann|c|Wen besuchst du? – ___ Onkel.|Meinen/Mein/Meinem|Meinen|wen? → Akkusativ: der Onkel → meinen.\nakk-wann|c|Ich finde ___ Schlüssel nicht.|den/der/dem|den|finden + Akkusativ: der Schlüssel → den.\npron-akk|w|Ich liebe dich. Liebst du ___ auch?|ich|mich|ich → mich.\npron-akk|w|Ich sehe ___ morgen.|du|dich|du → dich.\npron-akk|c|Wo ist der Schlüssel? – Ich finde ___ nicht.|ihn/sie/es|ihn|der Schlüssel → er → ihn.\npron-akk|c|Die Tasche ist schön. Ich kaufe ___.|sie/ihn/es|sie|die Tasche → sie.\npron-akk|c|Das Buch ist toll. Ich lese ___ jeden Abend.|es/ihn/sie|es|das Buch → es.\npron-akk|c|Der Computer ist alt. ___ funktioniert nicht.|Er/Es/Sie|Er|der Computer → er. По-немецки компьютер «он».\npron-akk|w|Kannst du ___ hören?|wir|uns|wir → uns.\npron-akk|w|Ich rufe ___ morgen an, Kinder.|ihr|euch|ihr → euch.\npron-akk|c|Frau Berg, ich verstehe ___ nicht.|Sie/Ihnen/Ihr|Sie|Вежливое Sie в Akkusativ не меняется.\npron-poss|c|Paul ist verheiratet. Das ist ___ Frau.|seine/ihre/sein|seine|Жена Пауля, его → sein; die Frau → seine.\npron-poss|c|Anna ist verheiratet. Das ist ___ Mann.|ihr/sein/ihre|ihr|Муж Анны, её → ihr; der Mann → без окончания.\npron-poss|c|Anna besucht ___ Mutter (свою маму).|ihre/seine/ihr|ihre|«Свою»: Анна → ihr; die Mutter → ihre. seine Mutter значило бы «его маму».\npron-poss|c|Tom ruft ___ Bruder an (своему брату).|seinen/sein/ihren|seinen|«Своему»: Том → sein; der Bruder в Akkusativ → seinen. ihren Bruder значило бы «её брату».\npron-poss|w|Wie ist ___ Name?|Sie|Ihr|Sie → Ihr, с большой буквы.\npron-poss|c|Kinder, wo ist ___ Lehrerin?|eure/euer/eurer|eure|ihr → euer; с окончанием e выпадает: eure.\npron-poss|w|Das ist ___ Wohnung.|wir|unsere|wir → unser; die Wohnung → unsere.\npron-poss|c|Ich suche ___ Handy.|mein/meinen/meine|mein|das Handy в Akkusativ не меняется → mein.\nmodal-form|w|Ich ___ gut schwimmen.|können|kann|ich kann.\nmodal-form|w|Er ___ heute arbeiten.|müssen|muss|er muss: без окончания.\nmodal-form|w|Du ___ hier nicht rauchen.|dürfen|darfst|du darfst.\nmodal-form|w|___ du mitkommen?|wollen|Willst|du willst.\nmodal-form|w|Wir ___ einen Tisch für zwei Personen.|möchten|möchten|wir möchten.\nmodal-form|c|Mein Sohn ___ schon lesen.|kann/kannt/könnt|kann|er kann: без -t.\nmodal-form|c|Ihr ___ leise sein.|müsst/müssen/muss|müsst|ihr müsst.\nmodal-form|w|Der Arzt sagt, ich ___ viel trinken.|sollen|soll|Совет врача (чужое указание) → sollen; ich soll.\nmodal-satz|c|Как по-немецки «Мне нужно сегодня работать»?|Ich muss heute arbeiten./Ich muss arbeiten heute./Ich heute muss arbeiten.|Ich muss heute arbeiten.|Модальный глагол второй, инфинитив в конце.\nmodal-satz|c|Hier steht: Rauchen verboten! Hier ___ man nicht rauchen.|darf/muss/will|darf|verboten = запрещено → nicht dürfen.\nmodal-satz|c|Morgen ist Sonntag. Du ___ nicht früh aufstehen.|musst/darfst/kannst|musst|Воскресенье: вставать рано не обязательно → nicht müssen.\nmodal-satz|c|Guten Tag, ich ___ ein Kilo Tomaten, bitte.|möchte/muss/darf|möchte|Вежливая просьба в магазине → möchte.\nmodal-satz|c|___ ich hier parken? – Nein, hier ist Parkverbot.|Darf/Darfst/Dürfen|Darf|Спрашиваем разрешение → dürfen; ich darf, без окончания.\nmodal-satz|c|Mein Bruder ___ Arzt werden. Das ist sein Traum.|will/willt/wollt|will|Его собственная мечта → wollen; у er форма will, без окончания.\nmodal-satz|c|Как по-немецки «Я хотел бы кофе»?|Ich möchte einen Kaffee./Ich möchte ein Kaffee./Ich möchten einen Kaffee.|Ich möchte einen Kaffee.|möchte можно без инфинитива; der Kaffee → einen.\nmodal-satz|c|Wir können morgen ins Kino ___.|gehen/gehe/gehst|gehen|После модального глагола инфинитив.\ntrenn-form|w|Am Samstag ___ ich im Supermarkt ein.|einkaufen|kaufe|Основа второй, приставка ein в конце.\ntrenn-form|w|Wann ___ der Zug an?|ankommen|kommt|Основа kommt второй, an в конце.\ntrenn-form|w|Er ___ jeden Abend fern.|fernsehen|sieht|Основа sieht (e → ie) второй, fern в конце.\ntrenn-form|w|Ich rufe dich morgen ___.|anrufen|an|Приставка an в конце.\ntrenn-form|w|___ du mit? Wir gehen ins Kino.|mitkommen|Kommst|Вопрос: основа первая, mit в конце.\ntrenn-form|w|Der Kurs fängt um neun Uhr ___.|anfangen|an|Приставка an в конце.\ntrenn-form|w|Wir ___ heute Abend aus.|ausgehen|gehen|Основа второй, aus в конце.\ntrenn-form|c|Как по-немецки «Я встаю рано»?|Ich stehe früh auf./Ich aufstehe früh./Ich stehe auf früh.|Ich stehe früh auf.|Приставка auf в самом конце.\ntrenn-ganz|c|Ich muss morgen früh ___.|aufstehen/stehe auf/auf stehen|aufstehen|С модальным глаголом слово в конце целиком.\ntrenn-ganz|c|Ich ___ das nicht.|verstehe/stehe ver/verstehen|verstehe|ver- никогда не отделяется.\ntrenn-ganz|c|Er ___ die Rechnung.|bezahlt/zahlt be/bezahlen|bezahlt|be- никогда не отделяется.\ntrenn-ganz|c|Kannst du mich heute Abend ___?|anrufen/rufen an/an rufen|anrufen|С модальным глаголом слово в конце целиком.\ntrenn-ganz|c|Wir ___ am Sonntag unsere Oma.|besuchen/suchen be/besucht|besuchen|be- не отделяется; wir → besuchen.\nimp-form|w|___ bitte!|kommen, du|Komm/Komme|du kommst → Komm!\nimp-form|w|___ Sie bitte!|warten|Warten|Sie: инфинитив + Sie.\nimp-form|w|___ das Buch!|lesen, du|Lies|du liest → Lies! Смена e → ie остаётся.\nimp-form|w|___ langsam!|fahren, du|Fahr/Fahre|du fährst → Fahr! Умлаут пропадает.\nimp-form|w|___ das!|nehmen, du|Nimm|du nimmst → Nimm!\nimp-form|w|Kinder, ___ leise!|sprechen, ihr|sprecht|ihr sprecht → sprecht! (без ihr).\nimp-form|c|___ bitte lauter, Herr Braun!|Sprechen Sie/Sprich/Sprecht|Sprechen Sie|Herr Braun на «Вы» → Sprechen Sie.\nimp-form|c|Peter, ___ mir bitte!|hilf/hilfst/helf|hilf|du hilfst → Hilf!\nimp-bes|c|___ pünktlich, Herr Weber!|Seien Sie/Sind Sie/Sei|Seien Sie|sein в форме Sie: Seien Sie!\nimp-bes|c|Max, ___ ruhig!|sei/bist/seid|sei|sein в форме du: Sei!\nimp-bes|c|Как сказать другу «Открой, пожалуйста, окно!»?|Mach bitte das Fenster auf!/Aufmach bitte das Fenster!/Mach auf bitte das Fenster!|Mach bitte das Fenster auf!|aufmachen: приставка в конце.\nimp-bes|c|Ruf mich bitte ___!|an/auf/mit|an|anrufen → Ruf … an!\nimp-bes|w|___ mir bitte, Frau Lang!|helfen, Sie|Helfen Sie|Sie: Helfen Sie mir bitte!\nzeit-uhr|c|8:30 = ___|halb neun/halb acht/acht halb|halb neun|halb neun = половина девятого = 8:30.\nzeit-uhr|c|7:15 = ___|Viertel nach sieben/Viertel vor sieben/Viertel nach acht|Viertel nach sieben|Четверть после семи.\nzeit-uhr|c|9:45 = ___|Viertel vor zehn/Viertel nach neun/Viertel vor neun|Viertel vor zehn|Четверть до десяти.\nzeit-uhr|c|Es ist halb drei. Сколько времени?|2:30/3:30/3:15|2:30|halb drei = половина третьего = 2:30.\nzeit-uhr|c|zehn nach vier = ___|4:10/3:50/10:04|4:10|nach = после: десять минут после четырёх.\nzeit-uhr|c|Официально 18:20 = ___|achtzehn Uhr zwanzig/zwanzig nach achtzehn Uhr/acht Uhr zwanzig|achtzehn Uhr zwanzig|Официально: часы, Uhr, минуты, по 24 часам.\nzeit-prep|c|Der Kurs beginnt ___ neun Uhr.|um/am/im|um|Время на часах → um.\nzeit-prep|c|Ich habe ___ Montag frei.|am/um/im|am|День недели → am.\nzeit-prep|c|___ Sommer fahren wir ans Meer.|Im/Am/Um|Im|Время года → im.\nzeit-prep|c|Wir treffen uns ___ Abend.|am/im/um|am|Часть суток → am (кроме in der Nacht).\nzeit-prep|c|Das Geschäft ist ___ 9 ___ 18 Uhr geöffnet.|von – bis/um – bis/am – bis|von – bis|С … до … → von … bis.\nzeit-prep|c|Ich habe ___ Mai Geburtstag.|im/am/um|im|Месяц → im.\nzeit-datum|c|3. Mai: Heute ist der ___ Mai.|dritte/dreite/drei|dritte|3. → der dritte, неправильная форма.\nzeit-datum|w|Mein Geburtstag ist am ___ Juli.|1.|ersten|am + порядковое на -en: am ersten.\nzeit-datum|w|Heute ist der ___ Oktober.|7.|siebte/siebente|7. → der siebte (siebente тоже верно, но звучит устаревше).\nzeit-datum|c|am 20. Juni = am ___ Juni|zwanzigsten/zwanzigten/zwanzig|zwanzigsten|С 20 суффикс -st-: am zwanzigsten.\nzeit-datum|c|1990 = ___|neunzehnhundertneunzig/eintausendneunhundertneunzig/neunzehnneunzig|neunzehnhundertneunzig|Годы до 2000 читают сотнями: neunzehnhundert + neunzig.\ndat-form|c|Ich fahre mit ___ Bus.|dem/den/der|dem|mit + Dativ: der Bus → dem.\ndat-form|c|Er wohnt bei ___ Eltern.|seinen/seine/seiner|seinen|bei + Dativ, множественное → seinen.\ndat-form|w|Das Handy gehört ___.|ich|mir|gehören + Dativ: ich → mir.\ndat-form|w|Kannst du ___ helfen?|wir|uns|helfen + Dativ: wir → uns.\ndat-form|c|Ich spreche mit ___ Lehrerin.|der/die/dem|der|mit + Dativ: die → der.\ndat-form|c|Wir spielen mit den ___.|Kindern/Kinder/Kinds|Kindern|Dativ множественного: существительное + n.\ndat-form|w|Wie geht es ___, Frau Schulz?|Sie|Ihnen|Sie в Dativ → Ihnen.\ndat-wann|c|Ich gehe ___ Arzt.|zum/zur/zu der|zum|zu + dem Arzt → zum.\ndat-wann|c|Nach ___ Essen trinke ich Tee.|dem/das/den|dem|nach + Dativ: das Essen → dem.\ndat-wann|c|Der Pullover gefällt ___.|mir/mich/ich|mir|gefallen + Dativ: «мне нравится».\ndat-wann|c|Ich danke ___ für die Hilfe.|dir/dich/du|dir|danken + Dativ.\ndat-wann|c|Er kommt gerade ___ Arbeit.|von der/vom/von die|von der|von + Dativ: die Arbeit → der.\ndat-wann|c|Schmeckt ___ die Suppe?|dir/dich/du|dir|schmecken + Dativ.\ndat-wann|w|Ich wohne seit ___ Jahr in Polen.|ein|einem|seit + Dativ: das Jahr → einem.\nort-wohin|c|Ich fahre morgen ___ Berlin.|nach/zu/bei|nach|Город без артикля → nach.\nort-wohin|c|Wir fliegen ___ Schweiz.|in die/nach/zur|in die|Страна с артиклем → in die.\nort-wohin|c|Ich gehe jetzt ___ Hause.|nach/zu/in|nach|Домой = nach Hause.\nort-wohin|c|Morgen gehe ich ___ Ärztin.|zur/nach/in die|zur|К человеку → zu: zu der → zur.\nort-wohin|c|Heute Abend gehen wir ___ Kino.|ins/nach/im|ins|Внутрь здания → in das = ins. im это «где».\nort-wohin|c|Fährst du ___ Maria?|zu/nach/in|zu|К человеку → zu.\nort-wohin|c|Ich fliege im Sommer ___ Italien.|nach/bei/zu|nach|Страна без артикля → nach.\nort-wo|c|Ich bin heute ___ Hause.|zu/nach/in|zu|Дома = zu Hause.\nort-wo|c|Sie arbeitet ___ Siemens.|bei/in/zu|bei|У кого, на какой фирме → bei.\nort-wo|c|Ich komme ___ Polen. Ich bin Pole.|aus/bei/zu|aus|Откуда, страна → aus.\nort-wo|c|Er wohnt ___ der Schweiz.|in/nach/aus|in|Где → in.\nort-wo|c|Ich komme gerade ___ Arzt.|vom/aus dem/beim|vom|Откуда, от человека → von: von dem → vom.\nort-wo|c|Wo ist Tom? – Er ist ___ Anna.|bei/zu/nach|bei|У кого → bei.\nort-wo|c|Wir wohnen ___ Hamburg.|in/nach/zu|in|Где, город → in.\nperf-bild|w|Ich habe gestern Fußball ___.|spielen|gespielt|Правильный: ge- + spiel + -t.\nperf-bild|w|Wir haben Pizza ___.|essen|gegessen|Неправильный: gegessen.\nperf-bild|w|Hast du schon das Buch ___?|lesen|gelesen|Неправильный: gelesen.\nperf-bild|w|Er hat viel ___.|arbeiten|gearbeitet|Основа на -t: ge- + arbeit + -et.\nperf-bild|w|Ich habe einen Brief ___.|schreiben|geschrieben|Неправильный: ei → ie, geschrieben.\nperf-bild|w|Was hast du am Wochenende ___?|machen|gemacht|Правильный: gemacht.\nperf-bild|c|Lena hat Tee ___.|getrunken/getrinkt/getrunkt|getrunken|Неправильный: trinken → getrunken.\nperf-sein|c|Ich ___ nach Berlin gefahren.|bin/habe/hat|bin|Движение из точки в точку → sein.\nperf-sein|c|Wir ___ gestern im Kino gewesen.|sind/haben/hat|sind|sein → ist gewesen, с sein.\nperf-sein|c|Er ___ zu Hause geblieben.|ist/hat/haben|ist|bleiben → ist geblieben: запомнить.\nperf-sein|c|___ du einen Kaffee getrunken?|Hast/Bist/Ist|Hast|trinken не движение → haben.\nperf-sein|w|Wann bist du heute ___?|aufstehen|aufgestanden|aufstehen: смена состояния, с sein; ge между auf и stand.\nperf-sein|c|Was ___ passiert?|ist/hat/haben|ist|passieren → ist passiert.\nperf-ohne|w|Ich habe in Minsk ___.|studieren|studiert|На -ieren: без ge-.\nperf-ohne|w|Wir haben Oma ___.|besuchen|besucht|Приставка be-: без ge-.\nperf-ohne|w|Ich habe im Supermarkt ___.|einkaufen|eingekauft|Отделяемая приставка: ein + ge + kauft.\nperf-ohne|c|Hast du mich ___?|verstanden/geverstanden/verstehen|verstanden|Приставка ver-: без ge-.\nperf-ohne|w|Er hat mich gestern ___.|anrufen|angerufen|Отделяемая: an + ge + rufen.\nkontr-art|c|Как по-немецки «У меня есть собака»?|Ich habe einen Hund./Ich habe Hund./Ich habe der Hund.|Ich habe einen Hund.|Исчисляемое в единственном числе не бывает без артикля; haben + Akkusativ.\nkontr-art|c|Как по-немецки «Я инженер»?|Ich bin Ingenieur./Ich bin einen Ingenieur./Ich habe Ingenieur.|Ich bin Ingenieur.|Профессия после sein без артикля.\nkontr-art|c|Как по-немецки «Это стол»?|Das ist ein Tisch./Das ist Tisch./Das ist einen Tisch.|Das ist ein Tisch.|Нужен артикль; после sein Nominativ: ein.\nkontr-art|c|Ich komme aus ___ Türkei.|der/die/–|der|Страна с артиклем: die Türkei; aus + Dativ → der.\nkontr-art|c|Ich trinke gern ___ Wasser.|– (без артикля)/einen/eine|– (без артикля)|Вещество вообще без артикля. Кроме того, das Wasser не может быть einen или eine.\nkontr-art|c|Meine Frau ist ___ Ärztin.|– (без артикля)/einer/eines|– (без артикля)|Профессия после sein без артикля.\nkontr-satz|c|Как по-немецки «Я дома»?|Ich bin zu Hause./Ich zu Hause./Ich habe zu Hause.|Ich bin zu Hause.|Глагол обязателен.\nkontr-satz|c|Как по-немецки «Мне 25 лет»?|Ich bin 25 Jahre alt./Mir ist 25 Jahre./Ich habe 25 Jahre.|Ich bin 25 Jahre alt.|Возраст: ich bin … Jahre alt.\nkontr-satz|c|Как по-немецки «Идёт дождь»?|Es regnet./Regnet./Der Regen geht.|Es regnet.|Подлежащее нужно, даже пустое es.\nkontr-satz|c|Как по-немецки «Мне холодно»?|Mir ist kalt./Ich bin kalt./Mich ist kalt.|Mir ist kalt.|Ощущение: mir ist kalt. «Ich bin kalt» значит «я холодный человек».\nkontr-satz|c|Как по-немецки «Я голоден»?|Ich habe Hunger./Ich bin Hunger./Mir ist Hunger.|Ich habe Hunger.|Голод «имеют»: Hunger haben, Durst haben.\nkontr-satz|c|Как по-немецки «Сегодня холодно»?|Heute ist es kalt./Heute ist kalt./Heute kalt.|Heute ist es kalt.|Нужен глагол и подлежащее es.\nrekt-a1|c|Ich rufe ___ morgen an.|dich/dir/du|dich|anrufen + Akkusativ, хотя по-русски «звонить тебе».\nrekt-a1|c|Wir danken ___ für das Geschenk.|Ihnen/Sie/Ihr|Ihnen|danken + Dativ, хотя по-русски «благодарить Вас».\nrekt-a1|c|Ich gratuliere ___ zum Geburtstag!|dir/dich/du|dir|gratulieren + Dativ.\nrekt-a1|c|Er heiratet ___ Anna.|– (без предлога)/mit/an|– (без предлога)|heiraten + Akkusativ без предлога: «жениться на» по-немецки «жениться кого».\nrekt-a1|c|Ich warte ___ den Bus.|auf/–/für|auf|warten auf + Akkusativ.\nrekt-a1|c|Wir fahren ___ dem Zug.|mit/auf/an|mit|Транспорт: mit + Dativ.\nrekt-a1|c|Spielst du ___ Gitarre?|– (без предлога)/auf/an|– (без предлога)|Gitarre spielen: без предлога.\nrekt-a1|c|Ich frage ___ Lehrer.|den/dem/der|den|fragen + Akkusativ.\nrekt-a1|c|Kannst du ___ anrufen?|mich/mir/ich|mich|anrufen + Akkusativ.\nrekt-a1|c|Ich helfe ___ Mutter.|meiner/meine/mein|meiner|helfen + Dativ: die Mutter → meiner.\nrekt-a1|c|Er spielt jeden Samstag ___.|Fußball/in Fußball/im Fußball|Fußball|Fußball spielen: без предлога.\nrekt-a1|c|Wartest du ___ mich?|auf/für/–|auf|warten auf + Akkusativ.\nfalsch-a1|c|Как по-немецки «фамилия»?|der Familienname/die Familie/die Firma|der Familienname|die Familie это семья.\nfalsch-a1|c|Ich kaufe ein ___ mit Fotos von Autos. (журнал)|Magazin/Geschäft/Laden|Magazin|das Magazin = журнал. Магазин это Geschäft или Laden.\nfalsch-a1|c|Brot kaufe ich in diesem ___. (магазин)|Geschäft/Magazin/Kabinett|Geschäft|Магазин = das Geschäft (или der Laden). das Magazin это журнал.\nfalsch-a1|c|Der Kölner ___ ist eine große Kirche.|Dom/Haus/Platz|Dom|der Dom = собор, не дом.\nfalsch-a1|c|Ich habe am Montag einen ___ beim Arzt.|Termin/Begriff/Platz|Termin|der Termin = запись, приём.\nfalsch-a1|c|Die Dokumente liegen in der ___. (папка)|Mappe/Karte/Note|Mappe|die Mappe = папка.\nfalsch-a1|c|Was bedeutet <b>die Note</b> в школе?|оценка/записка/доза|оценка|die Note = оценка (и нота). Записка это die Notiz.\nfalsch-a1|c|Was bedeutet <b>die Dose</b>?|банка/доза/дозор|банка|die Dose = банка (консервная). Доза это die Dosis.\nfalsch-a1|c|Was bedeutet <b>der Platz</b>?|место; площадь/платье/плащ|место; площадь|der Platz = место или площадь. Платье = das Kleid.\nfalsch-a1|c|Was bedeutet <b>die Brille</b>?|очки/бриллиант/брелок|очки|die Brille = очки.\nfalsch-a1|c|Mein Sohn geht aufs ___. Er ist 15. (гимназия)|Gymnasium/Turnhalle/Kabinett|Gymnasium|das Gymnasium = гимназия, школа. Спортзал = die Turnhalle.\nfalsch-a1|c|Ich fahre mit dem Zug. Wo kann ich eine ___ kaufen?|Fahrkarte/Mappe/Note|Fahrkarte|die Karte, die Fahrkarte = билет. Карта тоже Karte, а папка Mappe.\n";
 const VOCAB_TEXT = "## Vocabulary decks. \"# id|level|Russian name\" opens a deck, then one \"deutsch=русский\" pair per line.\n## Nouns: article + noun, plural after a comma: -e, ¨-e, -er, ¨-er, -n, -en, -nen, -s, -, ¨- or a full form (Museen). No comma = no plural in use. \"(Pl.)\" = plural only.\n## Verbs with irregular forms, separable prefix or sein in Perfekt: (3rd person, hat/ist Partizip II).\n# a0-hallo|A0|Приветствие и вежливость\nHallo!=привет\nGuten Morgen!=доброе утро\nGuten Tag!=добрый день, здравствуйте\nGuten Abend!=добрый вечер\nGute Nacht!=спокойной ночи\nTschüs!=пока\nAuf Wiedersehen!=до свидания\nBis bald!=до скорого\nBis morgen!=до завтра\nbitte=пожалуйста\ndanke=спасибо\nDanke schön!=большое спасибо\nBitte schön!=пожалуйста (в ответ на спасибо)\nEntschuldigung!=извините\nEs tut mir leid.=мне жаль\nja=да\nnein=нет\ndoch=да (в ответ на вопрос с отрицанием)\nder Herr, -en=господин\nWie geht's?=как дела?\ngut=хорошо; хороший\nWillkommen!=добро пожаловать\nViel Glück!=удачи\nGute Besserung!=выздоравливай\nViel Spaß!=приятно провести время\nAlles Gute!=всего хорошего\nHerzlichen Glückwunsch!=поздравляю\n# a0-person|A0|Личные данные\nder Name, -n=имя (вообще); фамилия\nder Vorname, -n=имя\nder Familienname, -n=фамилия\nheißen (heißt, hat geheißen)=называться; меня зовут\ndie Adresse, -n=адрес\ndie Straße, -n=улица\ndie Hausnummer, -n=номер дома\ndie Postleitzahl, -en=почтовый индекс\nder Wohnort, -e=место жительства\nwohnen=жить, проживать\ndie Telefonnummer, -n=номер телефона\ndie E-Mail, -s=электронное письмо\ndas Alter=возраст\nalt=старый; … лет (о возрасте)\nder Geburtstag, -e=день рождения\ndas Geburtsdatum, Geburtsdaten=дата рождения\nder Geburtsort, -e=место рождения\ngeboren=родившийся\nledig=холост, не замужем\nverheiratet=женат, замужем\ngeschieden=разведён\nkommen (kommt, ist gekommen)=приходить; быть родом\ndas Formular, -e=бланк, анкета\nausfüllen (füllt aus, hat ausgefüllt)=заполнять\nunterschreiben (unterschreibt, hat unterschrieben)=подписывать\ndie Unterschrift, -en=подпись\nbuchstabieren=произносить по буквам\nder Ausweis, -e=удостоверение личности\nder Pass, ¨-e=паспорт\nmännlich=мужской\nweiblich=женский\ndie Nummer, -n=номер\ndas Datum, Daten=дата\n# a0-zahlen|A0|Числа\nnull=ноль\neins=один\nzwei=два\ndrei=три\nvier=четыре\nfünf=пять\nsechs=шесть\nsieben=семь\nacht=восемь\nneun=девять\nzehn=десять\nelf=одиннадцать\nzwölf=двенадцать\ndreizehn=тринадцать\nsechzehn=шестнадцать\nsiebzehn=семнадцать\nzwanzig=двадцать\ndreißig=тридцать\nvierzig=сорок\nfünfzig=пятьдесят\nsechzig=шестьдесят\nsiebzig=семьдесят\nachtzig=восемьдесят\nneunzig=девяносто\nhundert=сто\ntausend=тысяча\ndie Zahl, -en=число\nerste=первый\nzweite=второй\ndritte=третий\neinmal=один раз\nzweimal=два раза\nhalb=половина; пол-\n# a0-familie|A0|Семья и люди\ndie Familie, -n=семья\ndie Eltern (Pl.)=родители\nder Vater, ¨-=отец\ndie Mutter, ¨-=мать\ndas Kind, -er=ребёнок\nder Sohn, ¨-e=сын\ndie Tochter, ¨-=дочь\nder Bruder, ¨-=брат\ndie Schwester, -n=сестра\ndie Geschwister (Pl.)=братья и сёстры\nder Mann, ¨-er=мужчина; муж\ndie Frau, -en=женщина; жена; госпожа\ndie Großeltern (Pl.)=бабушка и дедушка\ndie Großmutter, ¨-=бабушка\nder Großvater, ¨-=дедушка\ndie Oma, -s=бабушка (разг.)\nder Opa, -s=дедушка (разг.)\nder Onkel, -=дядя\ndie Tante, -n=тётя\ndas Baby, -s=младенец\nder Junge, -n=мальчик\ndas Mädchen, -=девочка\nder Freund, -e=друг; парень\ndie Freundin, -nen=подруга; девушка\nder Partner, -=партнёр\ndie Partnerin, -nen=партнёрша\ndie Leute (Pl.)=люди\nder Mensch, -en=человек\n# a0-laender|A0|Страны и языки\ndas Land, ¨-er=страна\nDeutschland=Германия\nÖsterreich=Австрия\ndie Schweiz=Швейцария\nPolen=Польша\nRussland=Россия\nBelarus=Беларусь\ndie Ukraine=Украина\ndie Türkei=Турция\nEngland=Англия\nFrankreich=Франция\nItalien=Италия\nSpanien=Испания\ndie USA (Pl.)=США\nEuropa=Европа\ndie Sprache, -n=язык\nDeutsch=немецкий язык\nEnglisch=английский язык\nRussisch=русский язык\nPolnisch=польский язык\nsprechen (spricht, hat gesprochen)=говорить\ndie Hauptstadt, ¨-e=столица\ninternational=международный\nder Ausländer, -=иностранец\ndie Ausländerin, -nen=иностранка\n# a0-klein|A0|Маленькие слова\nund=и\noder=или\naber=но\nauch=тоже, также\nsehr=очень\nnicht=не\nkein=никакой, ни одного\nhier=здесь\ndort=там\nwer=кто\nwas=что\nwo=где\nwoher=откуда\nwohin=куда\nwie=как\nwann=когда\nwarum=почему\nwie viel=сколько\nwelcher=какой, который\nich=я\ndu=ты\ner=он\nsie=она; они\nwir=мы\nihr=вы (несколько человек на «ты»)\nSie=Вы (вежливо)\ndas=это\ngern=охотно, с удовольствием\nviel=много\nwenig=мало\n# a1-tag|A1|Время, дни недели\ndie Zeit, -en=время\ndie Uhr, -en=часы; час (о времени)\ndie Stunde, -n=час\ndie Minute, -n=минута\ndie Sekunde, -n=секунда\nder Tag, -e=день\ndie Woche, -n=неделя\ndas Wochenende, -n=выходные\nder Morgen, -=утро\nder Vormittag, -e=время до полудня\nder Mittag, -e=полдень\nder Nachmittag, -e=время после полудня\nder Abend, -e=вечер\ndie Nacht, ¨-e=ночь\nheute=сегодня\nmorgen=завтра\ngestern=вчера\njetzt=сейчас\nfrüh=рано\nspät=поздно\nder Montag, -e=понедельник\nder Dienstag, -e=вторник\nder Mittwoch, -e=среда\nder Donnerstag, -e=четверг\nder Freitag, -e=пятница\nder Samstag, -e=суббота\nder Sonntag, -e=воскресенье\nimmer=всегда\noft=часто\nmanchmal=иногда\nnie=никогда\nbald=скоро\nschon=уже\nnoch=ещё\ndas Viertel, -=четверть\npünktlich=пунктуальный, вовремя\nder Termin, -e=назначенная встреча, приём\ndie Pause, -n=перерыв\n# a1-jahr|A1|Месяцы и времена года\nder Monat, -e=месяц\ndas Jahr, -e=год\nder Januar=январь\nder Februar=февраль\nder März=март\nder April=апрель\nder Mai=май\nder Juni=июнь\nder Juli=июль\nder August=август\nder September=сентябрь\nder Oktober=октябрь\nder November=ноябрь\nder Dezember=декабрь\ndie Jahreszeit, -en=время года\nder Frühling, -e=весна\nder Sommer, -=лето\nder Herbst, -e=осень\nder Winter, -=зима\nder Feiertag, -e=праздник (выходной день)\ndie Ferien (Pl.)=каникулы\nder Urlaub, -e=отпуск\nWeihnachten=Рождество\nOstern=Пасха\n# a1-wohnen|A1|Жильё\ndie Wohnung, -en=квартира\ndas Haus, ¨-er=дом\ndas Zimmer, -=комната\ndie Küche, -n=кухня\ndas Bad, ¨-er=ванная\ndas Schlafzimmer, -=спальня\ndas Wohnzimmer, -=гостиная\nder Balkon, -e=балкон\nder Garten, ¨-=сад\ndie Toilette, -n=туалет\ndas Fenster, -=окно\ndie Tür, -en=дверь\nder Tisch, -e=стол\nder Stuhl, ¨-e=стул\ndas Bett, -en=кровать\nder Schrank, ¨-e=шкаф\ndas Sofa, -s=диван\ndie Lampe, -n=лампа\nder Kühlschrank, ¨-e=холодильник\nder Herd, -e=плита\ndie Waschmaschine, -n=стиральная машина\nder Fernseher, -=телевизор\ndie Miete, -n=арендная плата\nmieten=снимать (жильё)\nvermieten=сдавать (жильё)\nder Vermieter, -=арендодатель\nder Stock=этаж (2. Stock = третий этаж)\ndas Erdgeschoss, -e=первый этаж\nder Aufzug, ¨-e=лифт\ndie Treppe, -n=лестница\nder Schlüssel, -=ключ\nhell=светлый\ndunkel=тёмный\nruhig=тихий, спокойный\nlaut=громкий, шумный\nmöbliert=меблированный\nder Nachbar, -n=сосед\ndie Nachbarin, -nen=соседка\ndie Heizung, -en=отопление\nder Quadratmeter, -=квадратный метр\n# a1-lebensmittel|A1|Продукты\ndas Lebensmittel, -=продукт питания\ndas Brot, -e=хлеб\ndas Brötchen, -=булочка\ndie Butter=сливочное масло\nder Käse=сыр\ndie Wurst, ¨-e=колбаса\ndas Fleisch=мясо\ndas Hähnchen, -=курица (блюдо)\nder Fisch, -e=рыба\ndas Ei, -er=яйцо\ndas Gemüse=овощи\ndas Obst=фрукты\nder Apfel, ¨-=яблоко\ndie Banane, -n=банан\ndie Orange, -n=апельсин\ndie Kartoffel, -n=картофель\ndie Tomate, -n=помидор\ndie Zwiebel, -n=лук\nder Salat, -e=салат\nder Reis=рис\ndie Nudel, -n=лапша, макароны\ndie Suppe, -n=суп\nder Kuchen, -=пирог, торт\ndie Schokolade, -n=шоколад\nder Zucker=сахар\ndas Salz=соль\nder Pfeffer=перец (специя)\ndas Öl, -e=растительное масло\ndie Milch=молоко\nder Joghurt, -s=йогурт\ndas Wasser=вода\nder Kaffee=кофе\nder Tee, -s=чай\nder Saft, ¨-e=сок\ndas Bier, -e=пиво\nder Wein, -e=вино\ndas Getränk, -e=напиток\ndie Marmelade, -n=джем\n# a1-essen|A1|Еда, кафе и ресторан\ndas Essen, -=еда\nessen (isst, hat gegessen)=есть\ntrinken (trinkt, hat getrunken)=пить\ndas Frühstück=завтрак\nfrühstücken=завтракать\ndas Mittagessen, -=обед\ndas Abendessen, -=ужин\nkochen=готовить, варить\nschmecken=быть на вкус; нравиться на вкус\nlecker=вкусный\nder Hunger=голод\nder Durst=жажда\ndas Restaurant, -s=ресторан\ndas Café, -s=кафе\ndie Speisekarte, -n=меню\nbestellen=заказывать\nbezahlen=оплачивать\ndie Rechnung, -en=счёт\nder Kellner, -=официант\ndie Kellnerin, -nen=официантка\ndas Glas, ¨-er=стакан; стекло\ndie Flasche, -n=бутылка\ndie Tasse, -n=чашка\nder Teller, -=тарелка\ndas Messer, -=нож\ndie Gabel, -n=вилка\nder Löffel, -=ложка\nsüß=сладкий\ndie Kantine, -n=столовая (на работе)\n# a1-einkaufen|A1|Покупки\neinkaufen (kauft ein, hat eingekauft)=делать покупки\nkaufen=покупать\nverkaufen=продавать\ndas Geschäft, -e=магазин; дело\nder Laden, ¨-=магазин, лавка\nder Supermarkt, ¨-e=супермаркет\nder Markt, ¨-e=рынок\ndie Bäckerei, -en=пекарня\ndie Kasse, -n=касса\ndas Geld=деньги\nder Euro, -s=евро\nder Cent, -s=цент\nder Preis, -e=цена\nkosten=стоить\nbillig=дешёвый\nteuer=дорогой\ngünstig=выгодный, недорогой\ndas Angebot, -e=предложение, скидка\ndie Tüte, -n=пакет\ndas Kilo, -s=килограмм\ndas Gramm=грамм\nder Liter, -=литр\ndas Stück, -e=штука, кусок\ndie Packung, -en=упаковка\nbrauchen=нуждаться в чём-то\nsuchen=искать\nnehmen (nimmt, hat genommen)=брать\ngeben (gibt, hat gegeben)=давать\nbar=наличными\ndie Kreditkarte, -n=кредитная карта\nzahlen=платить\nder Kunde, -n=клиент, покупатель\ndie Kundin, -nen=клиентка, покупательница\ngeöffnet=открыто (о магазине)\ngeschlossen=закрыто\ndie Öffnungszeit, -en=время работы\n# a1-kleidung|A1|Одежда и цвета\ndie Kleidung=одежда\ndie Hose, -n=брюки\ndas Hemd, -en=рубашка\ndie Bluse, -n=блузка\ndas Kleid, -er=платье\nder Rock, ¨-e=юбка\ndie Jacke, -n=куртка\nder Mantel, ¨-=пальто\nder Pullover, -=свитер\ndas T-Shirt, -s=футболка\nder Schuh, -e=ботинок, туфля\ndie Socke, -n=носок\ndie Mütze, -n=шапка\ndie Größe, -n=размер\ntragen (trägt, hat getragen)=носить; нести\nanziehen (zieht an, hat angezogen)=надевать\npassen=подходить (по размеру)\ngefallen (gefällt, hat gefallen)=нравиться\ndie Farbe, -n=цвет\nrot=красный\nblau=синий, голубой\ngrün=зелёный\ngelb=жёлтый\nschwarz=чёрный\nweiß=белый\ngrau=серый\nbraun=коричневый\n# a1-verkehr|A1|Транспорт\nder Bahnhof, ¨-e=вокзал\nder Zug, ¨-e=поезд\nder Bus, -se=автобус\ndie U-Bahn, -en=метро\ndie S-Bahn, -en=городская электричка\ndie Straßenbahn, -en=трамвай\ndas Auto, -s=машина\ndas Fahrrad, ¨-er=велосипед\ndas Taxi, -s=такси\ndas Flugzeug, -e=самолёт\nder Flughafen, ¨-=аэропорт\ndie Haltestelle, -n=остановка\ndas Gleis, -e=путь (на вокзале)\ndie Fahrkarte, -n=билет на транспорт\ndas Ticket, -s=билет\ndie Abfahrt, -en=отправление\ndie Ankunft, ¨-e=прибытие\nabfahren (fährt ab, ist abgefahren)=отправляться, уезжать\nankommen (kommt an, ist angekommen)=прибывать\numsteigen (steigt um, ist umgestiegen)=делать пересадку\neinsteigen (steigt ein, ist eingestiegen)=садиться (в транспорт)\naussteigen (steigt aus, ist ausgestiegen)=выходить (из транспорта)\nfahren (fährt, ist gefahren)=ехать\nfliegen (fliegt, ist geflogen)=лететь\ngehen (geht, ist gegangen)=идти\nzu Fuß=пешком\ndie Verspätung, -en=опоздание\nder Führerschein, -e=водительские права\nparken=парковать(ся)\nder Parkplatz, ¨-e=парковка\ndie Autobahn, -en=автомагистраль\n# a1-stadt|A1|Город\ndie Stadt, ¨-e=город\ndas Dorf, ¨-er=деревня\ndas Zentrum, Zentren=центр\nder Platz, ¨-e=площадь; место\ndie Kirche, -n=церковь\ndas Museum, Museen=музей\ndie Post=почта\ndie Bank, -en=банк\ndas Hotel, -s=гостиница\ndie Polizei=полиция\ndie Apotheke, -n=аптека\ndas Krankenhaus, ¨-er=больница\ndas Kino, -s=кинотеатр\nder Park, -s=парк\ndas Rathaus, ¨-er=ратуша, мэрия\ndas Amt, ¨-er=ведомство, учреждение\ndie Ampel, -n=светофор\ndie Ecke, -n=угол\nlinks=налево, слева\nrechts=направо, справа\ngeradeaus=прямо\nweit=далеко\nnah=близко\nder Weg, -e=путь, дорога\ndie Brücke, -n=мост\ndas Schwimmbad, ¨-er=бассейн\ndie Information, -en=информация; справочное бюро\nder Kiosk, -e=киоск\n# a1-reise|A1|Путешествие\ndie Reise, -n=поездка, путешествие\nreisen (reist, ist gereist)=путешествовать\nder Koffer, -=чемодан\ndas Gepäck=багаж\ndie Tasche, -n=сумка\nder Rucksack, ¨-e=рюкзак\ndas Meer, -e=море\nder See, -n=озеро\nder Berg, -e=гора\nder Strand, ¨-e=пляж\ndie Übernachtung, -en=ночёвка\ndas Doppelzimmer, -=двухместный номер\ndas Einzelzimmer, -=одноместный номер\ndie Rezeption, -en=стойка регистрации\nbuchen=бронировать\nreservieren=резервировать\nder Ausflug, ¨-e=экскурсия, поездка на день\nbesichtigen=осматривать (достопримечательности)\nder Tourist, -en=турист\nder Stadtplan, ¨-e=план города\ndie Grenze, -n=граница\ndas Ausland=заграница\n# a1-beruf|A1|Работа и профессии\ndie Arbeit, -en=работа\narbeiten=работать\nder Beruf, -e=профессия\ndie Firma, Firmen=фирма\ndas Büro, -s=офис\nder Kollege, -n=коллега\ndie Kollegin, -nen=коллега (женщина)\nder Chef, -s=начальник\ndie Chefin, -nen=начальница\nder Arzt, ¨-e=врач\ndie Ärztin, -nen=врач (женщина)\nder Lehrer, -=учитель\ndie Lehrerin, -nen=учительница\nder Verkäufer, -=продавец\ndie Verkäuferin, -nen=продавщица\nder Ingenieur, -e=инженер\nder Mechaniker, -=механик\nder Friseur, -e=парикмахер\nder Koch, ¨-e=повар\nder Job, -s=работа (подработка)\nverdienen=зарабатывать\narbeitslos=безработный\ndie Stelle, -n=место работы, вакансия\ndie Anzeige, -n=объявление\nder Student, -en=студент\ndie Studentin, -nen=студентка\nder Schüler, -=школьник\nder Rentner, -=пенсионер\n# a1-lernen|A1|Учёба\ndie Schule, -n=школа\nder Kurs, -e=курс\ndie Universität, -en=университет\ndie Prüfung, -en=экзамен\nlernen=учить, учиться\nstudieren=учиться в вузе\nder Computer, -=компьютер\ndas Handy, -s=мобильный телефон\ndas Papier, -e=бумага\nder Stift, -e=ручка, карандаш\nder Kuli, -s=шариковая ручка\ndas Buch, ¨-er=книга\ndas Heft, -e=тетрадь\ndas Wörterbuch, ¨-er=словарь\ndie Frage, -n=вопрос\ndie Antwort, -en=ответ\nfragen=спрашивать\nantworten=отвечать\nverstehen (versteht, hat verstanden)=понимать\nwiederholen=повторять\nerklären=объяснять\ndie Übung, -en=упражнение\ndie Hausaufgabe, -n=домашнее задание\nder Fehler, -=ошибка\nrichtig=правильный\nfalsch=неправильный\ndie Seite, -n=страница; сторона\ndas Wort, ¨-er=слово\nder Satz, ¨-e=предложение (фраза)\nder Text, -e=текст\nschreiben (schreibt, hat geschrieben)=писать\nlesen (liest, hat gelesen)=читать\nankreuzen (kreuzt an, hat angekreuzt)=отметить крестиком\ndie Lösung, -en=решение, ответ к заданию\ndas Beispiel, -e=пример\nder Teil, -e=часть\n# a1-freizeit|A1|Свободное время\ndie Freizeit=свободное время\ndas Hobby, -s=хобби\nder Sport=спорт\nder Fußball, ¨-e=футбол; мяч\nschwimmen (schwimmt, ist geschwommen)=плавать\nspielen=играть\ntanzen=танцевать\nsingen (singt, hat gesungen)=петь\ndie Musik=музыка\nhören=слушать; слышать\nsehen (sieht, hat gesehen)=видеть; смотреть\nfernsehen (sieht fern, hat ferngesehen)=смотреть телевизор\nder Film, -e=фильм\ndas Konzert, -e=концерт\ndas Theater, -=театр\ndie Zeitung, -en=газета\ndas Foto, -s=фотография\nfotografieren=фотографировать\ndie Party, -s=вечеринка\ndas Fest, -e=праздник\nfeiern=праздновать\neinladen (lädt ein, hat eingeladen)=приглашать\ndie Einladung, -en=приглашение\nbesuchen=навещать, посещать\ntreffen (trifft, hat getroffen)=встречать\nspazieren gehen (geht spazieren, ist spazieren gegangen)=гулять\nwandern (wandert, ist gewandert)=ходить в поход\nRad fahren (fährt Rad, ist Rad gefahren)=кататься на велосипеде\ndas Spiel, -e=игра\nder Verein, -e=клуб, общество\ndas Internet=интернет\n# a1-wetter|A1|Погода и стороны света\ndas Wetter=погода\ndie Sonne=солнце\nder Regen=дождь\nregnen (es regnet)=идёт дождь\nder Schnee=снег\nschneien (es schneit)=идёт снег\nder Wind, -e=ветер\ndie Wolke, -n=облако\nheiß=жаркий, горячий\nwarm=тёплый\nkalt=холодный\nder Grad=градус\ndie Temperatur, -en=температура\nscheinen (scheint, hat geschienen)=светить\nschön=красивый; хороший (о погоде)\nder Himmel=небо\ndas Gewitter, -=гроза\nder Norden=север\nder Süden=юг\nder Osten=восток\nder Westen=запад\n# a1-koerper|A1|Тело и здоровье\nder Körper, -=тело\nder Kopf, ¨-e=голова\ndas Auge, -n=глаз\ndas Ohr, -en=ухо\ndie Nase, -n=нос\nder Mund, ¨-er=рот\nder Zahn, ¨-e=зуб\ndie Hand, ¨-e=кисть руки\nder Arm, -e=рука (от плеча)\ndas Bein, -e=нога\nder Fuß, ¨-e=ступня\nder Bauch, ¨-e=живот\nder Rücken, -=спина\ndas Haar, -e=волос\nkrank=больной\ngesund=здоровый\ndie Praxis, Praxen=врачебный кабинет, практика\ndas Medikament, -e=лекарство\ndie Tablette, -n=таблетка\nder Schmerz, -en=боль\nwehtun (tut weh, hat wehgetan)=болеть (о части тела)\ndas Fieber=температура, жар\nmüde=усталый\ndie Gesundheit=здоровье\nder Zahnarzt, ¨-e=зубной врач\ndie Versicherung, -en=страховка\n# a1-kontakt|A1|Телефон, почта, общение\ndas Telefon, -e=телефон\ntelefonieren=говорить по телефону\nanrufen (ruft an, hat angerufen)=звонить\nder Anrufbeantworter, -=автоответчик\ndie Nachricht, -en=сообщение\ndie SMS, -=SMS\nder Brief, -e=письмо\ndie Postkarte, -n=открытка\ndie Karte, -n=карточка; билет; карта\ndie Briefmarke, -n=почтовая марка\ndas Paket, -e=посылка\nschicken=посылать\nbekommen (bekommt, hat bekommen)=получать\nsagen=сказать\nerzählen=рассказывать\nder Absender, -=отправитель\nder Empfänger, -=получатель\ndie Hilfe=помощь\nhelfen (hilft, hat geholfen)=помогать\nder Gruß, ¨-e=привет (в письме)\nViele Grüße=с приветом (конец письма)\n# a1-verben|A1|Частые глаголы\nmachen=делать\nhaben (hat, hat gehabt)=иметь\nsein (ist, ist gewesen)=быть\nwerden (wird, ist geworden)=становиться\nbleiben (bleibt, ist geblieben)=оставаться\nfinden (findet, hat gefunden)=находить; считать (о мнении)\nliegen (liegt, hat gelegen)=лежать\nstehen (steht, hat gestanden)=стоять\nsitzen (sitzt, hat gesessen)=сидеть\nlegen=класть\nstellen=ставить\nöffnen=открывать\nschließen (schließt, hat geschlossen)=закрывать\naufmachen (macht auf, hat aufgemacht)=открывать (разг.)\nzumachen (macht zu, hat zugemacht)=закрывать (разг.)\nbeginnen (beginnt, hat begonnen)=начинаться\nanfangen (fängt an, hat angefangen)=начинать\nkennen (kennt, hat gekannt)=знать (человека, место)\nwissen (weiß, hat gewusst)=знать (факт)\ndenken (denkt, hat gedacht)=думать\nglauben=верить; полагать\nlieben=любить\nmögen (mag, hat gemocht)=любить, нравиться\nleben=жить\nwarten=ждать\nzeigen=показывать\nholen=сходить за, забрать\nbringen (bringt, hat gebracht)=приносить\nmitbringen (bringt mit, hat mitgebracht)=приносить с собой\nvergessen (vergisst, hat vergessen)=забывать\nverlieren (verliert, hat verloren)=терять\nkönnen (kann, hat gekonnt)=мочь, уметь\nmüssen (muss, hat gemusst)=быть должным, надо\nwollen (will, hat gewollt)=хотеть\ndürfen (darf, hat gedurft)=иметь разрешение, можно\nsollen (soll, hat gesollt)=следует (по чужому указанию)\nmöchten=хотел бы\naufstehen (steht auf, ist aufgestanden)=вставать\nschlafen (schläft, hat geschlafen)=спать\nwaschen (wäscht, hat gewaschen)=мыть, стирать\nduschen=принимать душ\nputzen=убирать, чистить\nbenutzen=использовать\ngehören=принадлежать\nmitkommen (kommt mit, ist mitgekommen)=идти вместе\nausgehen (geht aus, ist ausgegangen)=выходить (развлекаться)\nheiraten=жениться, выходить замуж\n# a1-adj|A1|Описания\ngroß=большой\nklein=маленький\nneu=новый\njung=молодой\nlang=длинный\nkurz=короткий\nschnell=быстрый\nlangsam=медленный\nleicht=лёгкий\nschwer=тяжёлый; трудный\neinfach=простой\nwichtig=важный\ninteressant=интересный\nlangweilig=скучный\ntoll=классный, отличный\nnett=милый, приятный\nfreundlich=дружелюбный\nfrei=свободный\nbesetzt=занятый\nkaputt=сломанный\nfertig=готовый\nschlecht=плохой\nglücklich=счастливый\ntraurig=грустный\nallein=один, в одиночку\nzusammen=вместе\nhoch=высокий\nsauber=чистый\nschmutzig=грязный\ndick=толстый\ndünn=тонкий\n# a1-klein|A1|Маленькие слова A1\nvielleicht=может быть\nnatürlich=конечно\nleider=к сожалению\nwieder=снова\nnur=только\ngenau=точно\nganz=совсем; целый\nsofort=сразу\nzuerst=сначала\ndann=потом\ndanach=после этого\netwas=что-то; немного\nnichts=ничего\nalles=всё\nalle=все\njeder=каждый\nman=(безличное) люди, «ты» в общем смысле\nmit=с (кем, чем)\nohne=без\nfür=для\nvon=от; о\nzu=к\nbei=у, при\nnach=после; в (город, страну)\naus=из\nin=в\nan=на (вертикальном), у\nauf=на (горизонтальном)\nunter=под\nüber=над; о (чём-то)\nvor=перед; назад (vor zwei Jahren)\nhinter=за, позади\nneben=рядом с\nzwischen=между\nseit=с (какого-то времени), уже … (длится)\nbis=до\nab=начиная с\ndenn=потому что, так как\nsondern=а (после отрицания)\nalso=итак, значит\nmal=-ка (смягчает просьбу)\n";
+// Native-speaker recordings from Wikimedia Commons: word -> file, author, licence, source page.
+const AUDIO = {
+ "Staat": {
+  "f": "audio/Staat.mp3",
+  "a": "T.Voekler",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Staat.OGG"
+ },
+ "Stadt": {
+  "f": "audio/Stadt.mp3",
+  "a": "T.Voekler",
+  "l": "Public domain",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Stadt.OGG"
+ },
+ "Bahn": {
+  "f": "audio/Bahn.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Bahn.ogg"
+ },
+ "Mann": {
+  "f": "audio/Mann.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Mann.ogg"
+ },
+ "Tee": {
+  "f": "audio/Tee.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Tee.ogg"
+ },
+ "Bett": {
+  "f": "audio/Bett.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Bett.ogg"
+ },
+ "Boot": {
+  "f": "audio/Boot.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Boot.ogg"
+ },
+ "kommen": {
+  "f": "audio/kommen.mp3",
+  "a": "Tosca",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-kommen.ogg"
+ },
+ "schon": {
+  "f": "audio/schon.mp3",
+  "a": "Dinock90",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-schon.ogg"
+ },
+ "schön": {
+  "f": "audio/schoen.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-sch%C3%B6n.ogg"
+ },
+ "Mutter": {
+  "f": "audio/Mutter.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Mutter.ogg"
+ },
+ "Mütter": {
+  "f": "audio/Muetter.mp3",
+  "a": "Bleibein",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-M%C3%BCtter.ogg"
+ },
+ "Käse": {
+  "f": "audio/Kaese.mp3",
+  "a": "Bleibein",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-K%C3%A4se.ogg"
+ },
+ "hören": {
+  "f": "audio/hoeren.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-h%C3%B6ren.ogg"
+ },
+ "fünf": {
+  "f": "audio/fuenf.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-f%C3%BCnf.ogg"
+ },
+ "Tür": {
+  "f": "audio/Tuer.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-T%C3%BCr.OGG"
+ },
+ "Wein": {
+  "f": "audio/Wein.mp3",
+  "a": "Pill",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Wein.ogg"
+ },
+ "Wien": {
+  "f": "audio/Wien.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Wien.ogg"
+ },
+ "mein": {
+  "f": "audio/mein.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-mein.ogg"
+ },
+ "Liebe": {
+  "f": "audio/Liebe.mp3",
+  "a": "Pill",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Liebe.ogg"
+ },
+ "Freund": {
+  "f": "audio/Freund.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Freund.ogg"
+ },
+ "Häuser": {
+  "f": "audio/Haeuser.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-H%C3%A4user.ogg"
+ },
+ "Haus": {
+  "f": "audio/Haus.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Haus.ogg"
+ },
+ "heute": {
+  "f": "audio/heute.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-heute.ogg"
+ },
+ "Schule": {
+  "f": "audio/Schule.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Schule.ogg"
+ },
+ "Sport": {
+  "f": "audio/Sport.mp3",
+  "a": "Edward Montgomery Harrington",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Sport.ogg"
+ },
+ "Fenster": {
+  "f": "audio/Fenster.mp3",
+  "a": "StMH",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Fenster.ogg"
+ },
+ "Deutsch": {
+  "f": "audio/Deutsch.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Deutsch.ogg"
+ },
+ "Zeit": {
+  "f": "audio/Zeit.mp3",
+  "a": "Dinock90",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Zeit.ogg"
+ },
+ "Platz": {
+  "f": "audio/Platz.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Platz.ogg"
+ },
+ "zwei": {
+  "f": "audio/zwei.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-zwei.ogg"
+ },
+ "Buch": {
+  "f": "audio/Buch.mp3",
+  "a": "Tosca",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Buch.ogg"
+ },
+ "Bücher": {
+  "f": "audio/Buecher.mp3",
+  "a": "Tosca",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-B%C3%BCcher.ogg"
+ },
+ "acht": {
+  "f": "audio/acht.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-acht.ogg"
+ },
+ "ich": {
+  "f": "audio/ich.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-ich.ogg"
+ },
+ "Milch": {
+  "f": "audio/Milch.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Milch.ogg"
+ },
+ "auch": {
+  "f": "audio/auch.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-auch.ogg"
+ },
+ "sechs": {
+  "f": "audio/sechs.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-sechs.ogg"
+ },
+ "zwanzig": {
+  "f": "audio/zwanzig.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-zwanzig.ogg"
+ },
+ "Vater": {
+  "f": "audio/Vater.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Vater.ogg"
+ },
+ "Wasser": {
+  "f": "audio/Wasser.mp3",
+  "a": "Tosca",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Wasser.ogg"
+ },
+ "Sonne": {
+  "f": "audio/Sonne.mp3",
+  "a": "",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Sonne.ogg"
+ },
+ "gehen": {
+  "f": "audio/gehen.mp3",
+  "a": "Hschier",
+  "l": "CC BY 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-gehen.ogg"
+ },
+ "Straße": {
+  "f": "audio/Strasse.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Stra%C3%9Fe.ogg"
+ },
+ "Hund": {
+  "f": "audio/Hund.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Hund.ogg"
+ },
+ "Tag": {
+  "f": "audio/Tag.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Tag.ogg"
+ },
+ "gelb": {
+  "f": "audio/gelb.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-gelb.ogg"
+ },
+ "arbeiten": {
+  "f": "audio/arbeiten.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-arbeiten.ogg"
+ },
+ "bezahlen": {
+  "f": "audio/bezahlen.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-bezahlen.ogg"
+ },
+ "verstehen": {
+  "f": "audio/verstehen.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-verstehen.ogg"
+ },
+ "aufstehen": {
+  "f": "audio/aufstehen.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-aufstehen.ogg"
+ },
+ "Information": {
+  "f": "audio/Information.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Information.ogg"
+ },
+ "studieren": {
+  "f": "audio/studieren.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-studieren.ogg"
+ },
+ "Bäckerei": {
+  "f": "audio/Baeckerei.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-B%C3%A4ckerei.ogg"
+ },
+ "Musik": {
+  "f": "audio/Musik.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Musik.ogg"
+ },
+ "Name": {
+  "f": "audio/Name.mp3",
+  "a": "T.Voekler",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Name.OGG"
+ },
+ "ihr": {
+  "f": "audio/ihr.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-ihr.ogg"
+ },
+ "groß": {
+  "f": "audio/gross.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-gro%C3%9F.ogg"
+ },
+ "Jahr": {
+  "f": "audio/Jahr.mp3",
+  "a": "",
+  "l": "Public domain",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Jahr.ogg"
+ },
+ "Bier": {
+  "f": "audio/Bier.mp3",
+  "a": "",
+  "l": "Public domain",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Bier.ogg"
+ },
+ "jetzt": {
+  "f": "audio/jetzt.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-jetzt.ogg"
+ },
+ "Apfel": {
+  "f": "audio/Apfel.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Apfel.ogg"
+ },
+ "einkaufen": {
+  "f": "audio/einkaufen.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-einkaufen.ogg"
+ },
+ "Bahnhof": {
+  "f": "audio/Bahnhof.mp3",
+  "a": "T.Voekler",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Bahnhof.OGG"
+ },
+ "Geschenk": {
+  "f": "audio/Geschenk.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Geschenk.ogg"
+ },
+ "Student": {
+  "f": "audio/Student.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Student.ogg"
+ },
+ "gut": {
+  "f": "audio/gut.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-gut.ogg"
+ },
+ "Uhr": {
+  "f": "audio/Uhr.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Uhr.ogg"
+ },
+ "Zoo": {
+  "f": "audio/Zoo.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Zoo.ogg"
+ },
+ "Kind": {
+  "f": "audio/Kind.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Kind.ogg"
+ },
+ "bitte": {
+  "f": "audio/bitte.mp3",
+  "a": "Bleibein",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-bitte.ogg"
+ },
+ "Mädchen": {
+  "f": "audio/Maedchen.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-M%C3%A4dchen.ogg"
+ },
+ "Äpfel": {
+  "f": "audio/Aepfel.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-%C3%84pfel.ogg"
+ },
+ "zwölf": {
+  "f": "audio/zwoelf.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-zw%C3%B6lf.ogg"
+ },
+ "müde": {
+  "f": "audio/muede.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-m%C3%BCde.ogg"
+ },
+ "heißen": {
+  "f": "audio/heissen.mp3",
+  "a": "",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-hei%C3%9Fen.ogg"
+ },
+ "zehn": {
+  "f": "audio/zehn.mp3",
+  "a": "",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-zehn.ogg"
+ },
+ "Pizza": {
+  "f": "audio/Pizza.mp3",
+  "a": "Holunder Gabriel",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Pizza.ogg"
+ },
+ "viel": {
+  "f": "audio/viel.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-viel.ogg"
+ },
+ "vier": {
+  "f": "audio/vier.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-vier.ogg"
+ },
+ "Vase": {
+  "f": "audio/Vase.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Vase.ogg"
+ },
+ "Video": {
+  "f": "audio/Video.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Video.ogg"
+ },
+ "wo": {
+  "f": "audio/wo.mp3",
+  "a": "T.Voekler",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Wo.OGG"
+ },
+ "sieben": {
+  "f": "audio/sieben.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-sieben.ogg"
+ },
+ "Rose": {
+  "f": "audio/Rose.mp3",
+  "a": "Tosca",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Rose.ogg"
+ },
+ "das": {
+  "f": "audio/das.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-das.ogg"
+ },
+ "ja": {
+  "f": "audio/ja.mp3",
+  "a": "MiER",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-ja.ogg"
+ },
+ "Juni": {
+  "f": "audio/Juni.mp3",
+  "a": "Cyrotux",
+  "l": "CC BY-SA 2.5",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Juni.ogg"
+ },
+ "Lehrer": {
+  "f": "audio/Lehrer.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Lehrer.ogg"
+ },
+ "aber": {
+  "f": "audio/aber.mp3",
+  "a": "Pill",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Aber.ogg"
+ },
+ "Arbeit": {
+  "f": "audio/Arbeit.mp3",
+  "a": "Kampy",
+  "l": "CC BY 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Arbeit.ogg"
+ },
+ "spielen": {
+  "f": "audio/spielen.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-spielen.ogg"
+ },
+ "Frau": {
+  "f": "audio/Frau.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Frau.ogg"
+ },
+ "kaufen": {
+  "f": "audio/kaufen.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-kaufen.ogg"
+ },
+ "Tisch": {
+  "f": "audio/Tisch.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Tisch.ogg"
+ },
+ "sprechen": {
+  "f": "audio/sprechen.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-sprechen.ogg"
+ },
+ "ist": {
+  "f": "audio/ist.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-ist.ogg"
+ },
+ "tschüs": {
+  "f": "audio/tschues.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-tsch%C3%BCs.ogg"
+ },
+ "Rock": {
+  "f": "audio/Rock.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Rock.ogg"
+ },
+ "backen": {
+  "f": "audio/backen.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-backen.ogg"
+ },
+ "Quittung": {
+  "f": "audio/Quittung.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Quittung.ogg"
+ },
+ "Physik": {
+  "f": "audio/Physik.mp3",
+  "a": "Joni",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Physik.ogg"
+ },
+ "Kopf": {
+  "f": "audio/Kopf.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Kopf.ogg"
+ },
+ "kochen": {
+  "f": "audio/kochen.mp3",
+  "a": "StMH",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-kochen.ogg"
+ },
+ "leicht": {
+  "f": "audio/leicht.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-leicht.ogg"
+ },
+ "wachsen": {
+  "f": "audio/wachsen.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-wachsen.ogg"
+ },
+ "billig": {
+  "f": "audio/billig.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-billig.ogg"
+ },
+ "wichtig": {
+  "f": "audio/wichtig.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-wichtig.ogg"
+ },
+ "Chor": {
+  "f": "audio/Chor.mp3",
+  "a": "StMH",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Chor.ogg"
+ },
+ "Chef": {
+  "f": "audio/Chef.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Chef.ogg"
+ },
+ "erzählen": {
+  "f": "audio/erzaehlen.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-erz%C3%A4hlen.ogg"
+ },
+ "anrufen": {
+  "f": "audio/anrufen.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-anrufen.ogg"
+ },
+ "Kühlschrank": {
+  "f": "audio/Kuehlschrank.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-K%C3%BChlschrank.ogg"
+ },
+ "Station": {
+  "f": "audio/Station.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Station.ogg"
+ },
+ "Elefant": {
+  "f": "audio/Elefant.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Elefant.ogg"
+ },
+ "telefonieren": {
+  "f": "audio/telefonieren.mp3",
+  "a": "",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-telefonieren.ogg"
+ },
+ "Polizei": {
+  "f": "audio/Polizei.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Polizei.ogg"
+ },
+ "Biologie": {
+  "f": "audio/Biologie.mp3",
+  "a": "Jeuwre",
+  "l": "CC BY-SA 4.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Biologie.OGG"
+ },
+ "Büro": {
+  "f": "audio/Buero.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-B%C3%BCro.ogg"
+ },
+ "Hotel": {
+  "f": "audio/Hotel.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Hotel.ogg"
+ },
+ "Restaurant": {
+  "f": "audio/Restaurant.mp3",
+  "a": "Kampy",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Restaurant.ogg"
+ },
+ "Familie": {
+  "f": "audio/Familie.mp3",
+  "a": "T.Voekler",
+  "l": "CC BY-SA 3.0",
+  "u": "https://commons.wikimedia.org/wiki/File%3ADe-Familie.OGG"
+ }
+};
 </script>
 <script>
 (() => {
@@ -1436,7 +2171,8 @@ const VOCAB_TEXT = "## Vocabulary decks. \"# id|level|Russian name\" opens a dec
     onState('speaking');
     if (caps.tts) {
       try {
-        await caps.tts.speak(lines.map(([who, text]) => ({ text, voice: voiceOf(who), language: 'de', rate })));
+        // The language is given for the whole reading and for each line: a short word alone gives the voice no context to guess it.
+        await caps.tts.speak(lines.map(([who, text]) => ({ text, voice: voiceOf(who), language: 'de-DE', rate })), { language: 'de-DE' });
         onState('idle'); return true;
       } catch (e) {
         if (e && (e.code === 'viewer_stopped' || e.code === 'stopped')) { onState('idle'); return true; }
@@ -1458,8 +2194,25 @@ const VOCAB_TEXT = "## Vocabulary decks. \"# id|level|Russian name\" opens a dec
     });
     onState('idle'); return true;
   }
-  function stopSpeech() { try { if (caps.tts) caps.tts.stop(); } catch { /* ignore */ } try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch { /* ignore */ } }
-  const sayOne = (text) => speak([['A', text]], (s) => { if (s === 'none') toast(NO_VOICE); });
+  let curAudio = null;
+  function stopSpeech() {
+    try { if (curAudio) { curAudio.pause(); curAudio = null; } } catch { /* ignore */ }
+    try { if (caps.tts) caps.tts.stop(); } catch { /* ignore */ } try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch { /* ignore */ }
+  }
+  // Single words with a native-speaker recording (Wikimedia Commons) play that recording; everything else goes to the voice.
+  function playRec(word) {
+    const r = AUDIO[word];
+    if (!r) return Promise.resolve(false);
+    stopSpeech();
+    const a = new Audio(r.f); curAudio = a;
+    return a.play().then(() => new Promise((done) => { a.onended = () => done(true); a.onerror = () => done(true); a.onpause = () => done(true); })).catch(() => false);
+  }
+  async function sayWord(text, onState) {
+    onState = onState || (() => {});
+    if (AUDIO[text]) { onState('speaking'); const ok = await playRec(text); onState('idle'); if (ok) return true; }
+    return speak([['A', text]], onState);
+  }
+  const sayOne = (text) => sayWord(text, (s) => { if (s === 'none') toast(NO_VOICE); });
   // Any element with class "say" reads its German text aloud.
   document.addEventListener('click', (e) => { const s = e.target.closest('.say'); if (s) sayOne(s.dataset.say || s.textContent); });
 
@@ -2456,7 +3209,7 @@ Antworte nur mit JSON ohne Markdown: {"score":Zahl,"comment":"3-4 Sätze auf Rus
     const best = (id) => ((rec('sounds').scores || {})[id] || 0);
     function render() {
       body.replaceChildren();
-      body.append(txt('h2', '', 'Буквы и звуки'), txt('p', 'intro', 'Первый раздел ступени A0. Немецкий читается почти всегда по правилам: выучив десяток сочетаний, ты сможешь прочитать любое слово. Нажимай на буквы и слова, чтобы услышать их, а в конце каждой группы проверь себя на слух. Подробные правила и билеты на чтение лежат в «Грамматике», темы «Буквы и звуки», «Сочетания букв» и «Ударение».'));
+      body.append(txt('h2', '', 'Буквы и звуки'), txt('p', 'intro', 'Первый раздел ступени A0. Немецкий читается почти всегда по правилам: выучив десяток сочетаний, ты сможешь прочитать любое слово. Нажимай на буквы и слова, чтобы услышать их, а в конце каждой группы проверь себя на слух. Слова этого раздела, а также примеры из правил о произношении и билеты на чтение звучат записями носителей из Викисловаря. Названия букв, фразы и остальной тренажёр озвучивает синтезированный голос. Двоеточие в транскрипции значит долгий звук. Подробные правила и билеты на чтение лежат в «Грамматике», темы «Буквы и звуки», «Сочетания букв» и «Ударение».'));
       const ab = el('div', 'card');
       ab.append(txt('h3', '', 'Алфавит'), txt('p', 'note', 'Так называют буквы, когда диктуют имя по буквам (на экзамене это Sprechen Teil 1).'));
       const grid = el('div', 'abc-grid');
@@ -2464,6 +3217,21 @@ Antworte nur mit JSON ohne Markdown: {"score":Zahl,"comment":"3-4 Sätze auf Rus
       ab.append(grid);
       body.append(ab);
       for (const g of SOUNDS) body.append(group(g));
+      body.append(credits());
+    }
+    function credits() {
+      const d = el('details', 'rule');
+      d.append(txt('summary', '', `Записи произношения: ${Object.keys(AUDIO).length} слов, Wikimedia Commons`));
+      const b = el('div', 'rule-body');
+      b.append(txt('p', '', 'Записи носителей языка из немецкого Викисловаря, размещённые на Wikimedia Commons под свободными лицензиями. Для тренажёра они переведены в mp3, обрезана тишина и выровнена громкость. Автор и лицензия каждой записи:'));
+      const t = el('table'), tb = el('tbody');
+      for (const [w, r] of Object.entries(AUDIO).sort((x, y) => x[0].localeCompare(y[0], 'de'))) {
+        const tr = el('tr'); const td = txt('td', '', w); td.lang = 'de';
+        const src = el('td'); const a = txt('a', '', r.a || 'автор указан на странице файла'); a.href = r.u; a.target = '_blank'; a.rel = 'noopener'; src.append(a);
+        tr.append(td, src, txt('td', '', r.l)); tb.append(tr);
+      }
+      t.append(tb); const wrap = el('div', 'table-wrap'); wrap.append(t); b.append(wrap);
+      d.append(b); return d;
     }
     function group(g) {
       const c = el('div', 'card');
@@ -2471,7 +3239,7 @@ Antworte nur mit JSON ohne Markdown: {"score":Zahl,"comment":"3-4 Sätze auf Rus
       const sc = best(g.id); if (sc) h.append(txt('span', 'score ' + (sc >= 5 ? 'good' : sc >= 3 ? 'warm' : 'bad'), `лучший результат ${sc}/5`));
       c.append(h, txt('p', '', g.ru));
       const chips = el('div', 'wchips');
-      for (const [de, ru] of g.words) { const b = btn('', ''); const d = txt('span', '', de); d.lang = 'de'; b.append(d, txt('small', '', ru)); b.addEventListener('click', () => sayOne(de)); chips.append(b); }
+      for (const [de, ru, tr] of g.words) { const b = btn('', ''); const d = txt('span', '', de); d.lang = 'de'; b.append(d, txt('small', '', `«${tr}» ${ru}`)); b.addEventListener('click', () => sayOne(de)); chips.append(b); }
       c.append(chips);
       const quizBox = el('div', 'stage');
       const startQ = btn('ghost', 'Проверить себя на слух: 5 слов', () => { startQ.hidden = true; quiz(g, quizBox, () => { startQ.hidden = false; }); });
@@ -2494,7 +3262,7 @@ Antworte nur mit JSON ohne Markdown: {"score":Zahl,"comment":"3-4 Sätze auf Rus
         const others = shuffle(g.words.filter(([x]) => x !== de)).slice(0, 2).map(([x]) => x);
         const q = el('div', 'q');
         const msg = txt('p', 'note', '');
-        const play = btn('primary', '▶ Слушать слово', () => speak([['A', de]], (s) => { if (s === 'none') msg.textContent = NO_VOICE + ' Без голоса эта проверка не работает, но правила и билеты на чтение доступны.'; }));
+        const play = btn('primary', '▶ Слушать слово', () => sayWord(de, (s) => { if (s === 'none') msg.textContent = NO_VOICE + ' Без голоса эта проверка не работает, но правила и билеты на чтение доступны.'; }));
         q.append(txt('p', 'q-text', `${i + 1}. Какое слово прозвучало?`), el('div', 'actions'));
         q.lastChild.append(play);
         const opts = el('div', 'options');
